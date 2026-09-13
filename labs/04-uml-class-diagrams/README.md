@@ -28,9 +28,9 @@ By the end of this lab you will have:
    | "X has many Y" | `X "1" --> "*" Y` |
    | "X has a Y, and Y can exist without X" (aggregation) | `X o-- Y` |
    | "X has a Y, and Y is meaningless without X" (composition) | `X *-- Y` |
-   | "X uses Y, but doesn't hold onto it" | `X ..> Y` |
-   | "X is a kind of Y" (inheritance) | `X --|> Y` |
-   | "X implements the Y interface" | `Y` marked `<<interface>>`, edge `X ..|> Y` |
+   | "X uses Y, but doesn't hold onto it" | `X ..> Y` |  
+   | "X is a kind of Y" (inheritance) | `X --\|> Y` |
+   | "X implements the Y interface" | `Y` marked `<<interface>>`, edge `X ..\|> Y` |  
 
 4. Render it:
    ```bash

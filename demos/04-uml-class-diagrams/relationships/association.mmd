@@ -1,12 +1,14 @@
 classDiagram
     direction LR
-    class Order {
-        -instrument Instrument
-        -quantity double
-        -price double
+    class Library {
+        +lendBook(member, book) Loan
+        +returnBook(loan)
     }
-    class Client {
-        -clientId String
-        -riskLimit double
+    class Member {
+        -memberId String
+        -unpaidFees double
+        -activeLoans List~Loan~
+        +canBorrow() boolean
+        +payFees(amount double)
     }
-    Order "*" --> "1" Client : references
+    Library --> Member : coordinates

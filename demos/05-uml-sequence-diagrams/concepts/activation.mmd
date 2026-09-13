@@ -1,10 +1,19 @@
 %%{init: {'sequence': {'mirrorActors': false}}}%%
 sequenceDiagram
-    participant C as Client
-    participant O as OrderExecutor
-    participant P as Portfolio
+    actor M as Member
+    participant L as Library
+    participant B as Book
+    participant Loan as Loan
 
-    C->>+O: execute(order)
-    O->>+P: adjust(holding, delta)
-    P-->>-O: updated
-    O-->>-C: confirmation
+    M->>+L: borrowBook(member, book)
+    note right of L: Library is now active
+    L->>+B: checkAvailable()
+    note right of B: Book is now active
+    B-->>-L: true
+    note right of L: Book becomes inactive
+    L->>+Loan: new Loan(member, book, dueDate)
+    note right of Loan: Loan is now active
+    Loan-->>-L: loan
+    note right of L: Loan becomes inactive
+    L-->>-M: confirmation
+    note right of M: Member receives result, Library becomes inactive

@@ -1,7 +1,20 @@
 %%{init: {'sequence': {'mirrorActors': false}}}%%
 sequenceDiagram
-    participant O as OrderExecutor
-    participant I as BondInstrument
+    actor M as Member
+    participant L as Library
+    participant B as Book
+    participant Loan as Loan
 
-    O->>I: calculateFee(tradeValue)
-    I-->>O: 5.00
+    note over M,Loan: Different message types in sequence diagrams
+    M->>+L: borrowBook(member, book)
+    note right of M: Synchronous call (->>): Sender waits
+    L->>+B: checkAvailable()
+    note right of L: Synchronous call: Blocks until response
+    B-->>-L: isAvailable
+    note right of B: Return message (-->>): Response with activation end
+    L->>Loan: new Loan(member, book, dueDate)
+    note right of L: Synchronous creation
+    Loan->>L: 
+    note right of Loan: Self-message (optional action on self)
+    L-->>-M: confirmation
+    note right of L: Return message: Deactivates Library

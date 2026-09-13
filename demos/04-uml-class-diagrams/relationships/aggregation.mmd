@@ -1,9 +1,13 @@
 classDiagram
     direction LR
-    class Portfolio {
-        -holdings List~Holding~
+    class Loan {
+        -dueDate Date
+        -returnDate Date
+        +isOverdue() boolean
+        +calculateLateFee() double
     }
-    class Instrument {
-        -ticker String
+    class Book {
+        -isbn String
+        -title String
     }
-    Portfolio "1" o-- "*" Instrument : aggregation
+    Loan "*" o--> "1" Book : refers to

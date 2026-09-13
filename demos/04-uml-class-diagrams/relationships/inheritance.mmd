@@ -1,11 +1,18 @@
 classDiagram
     direction LR
-    class Instrument {
+    class Book {
         <<abstract>>
-        -ticker String
-        +calculateFee(tradeValue double)* double
+        -isbn String
+        -title String
+        +calculateDuration() int*
     }
-    class BondInstrument {
-        +calculateFee(tradeValue double) double
+    class PhysicalBook {
+        -location String
+        +calculateDuration() int
     }
-    BondInstrument --|> Instrument : inheritance
+    class EBook {
+        -fileFormat String
+        +calculateDuration() int
+    }
+    PhysicalBook --|> Book : inheritance
+    EBook --|> Book : inheritance

@@ -1,9 +1,16 @@
 classDiagram
     direction LR
-    class Portfolio {
-        -holdings List~Holding~
+    class Member {
+        -memberId String
+        -unpaidFees double
+        -activeLoans List~Loan~
+        +canBorrow() boolean
+        +payFees(amount double)
     }
-    class Holding {
-        -quantity double
+    class Loan {
+        -dueDate Date
+        -returnDate Date
+        +isOverdue() boolean
+        +calculateLateFee() double
     }
-    Portfolio "1" *-- "*" Holding : composition
+    Member "1" *-- "*" Loan : has

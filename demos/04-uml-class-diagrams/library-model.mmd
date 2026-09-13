@@ -3,6 +3,7 @@ classDiagram
     class Member {
         -memberId String
         -unpaidFees double
+        -activeLoans List~Loan~
         +canBorrow() boolean
         +payFees(amount double)
     }
@@ -14,17 +15,24 @@ classDiagram
         +calculateLateFee() double
     }
 
+    class Loanable {
+        <<interface>>
+        +calculateDuration() int
+    }
+
     class Book {
         -isbn String
         -title String
     }
 
     class Library {
-        +lendBook(member, book)
+        +lendBook(member, book) Loan
         +returnBook(loan)
     }
 
-    Member "1" --> "*" Loan : has
-    Loan "*" --> "1" Book : refers to
+    Member "1" *-- "*" Loan : has
+    Loan "*" o--> "1" Book : refers to
     Library ..> Member : coordinates
+    Library ..> Book : checks out
     Library ..> Loan : creates
+    Book ..|> Loanable : implements

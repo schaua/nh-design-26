@@ -1,11 +1,11 @@
 classDiagram
     direction LR
-    class Feeable {
+    class Loanable {
         <<interface>>
-        +calculateFee(tradeValue double) double
+        +calculateDuration() int
     }
-    class Instrument {
-        <<abstract>>
-        -ticker String
+    class Book {
+        -isbn String
+        -title String
     }
-    Instrument ..|> Feeable : implements
+    Book ..|> Loanable : implements

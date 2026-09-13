@@ -1,13 +1,11 @@
 %%{init: {'sequence': {'mirrorActors': false}}}%%
 sequenceDiagram
-    participant O as Order
-    participant V as OrderValidator
-    participant E as OrderExecutor
+    actor M as Member
+    participant L as Library
 
-    O->>V: validate(order)
-    alt order is valid
-        V-->>O: valid
-        O->>E: execute(order)
-    else order is invalid
-        V-->>O: rejected(reason)
+    M->>L: borrowBook(bookId)
+    alt Book is available
+        L->>M: Loan created, due in 14 days
+    else Book is not available
+        L->>M: Sorry, book is on loan
     end
