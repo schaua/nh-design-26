@@ -21,6 +21,7 @@ public class TradeDemo {
         boolean isBuy = true;          // Python True/False -> Java true/false, lowercase
 
         System.out.println(tradeId + ": quantity=" + quantity + " isBuy=" + isBuy);
+        System.out.println();
 
         // if/else: same idea as Python, but braces instead of indentation, and the
         // condition needs parentheses
@@ -50,6 +51,8 @@ public class TradeDemo {
         for (Trade trade : trades) {
             totalValue += trade.getValue();
         }
+        // trades.forEach(trade -> totalValue += trade.getValue());
+
         System.out.println("Total value: " + totalValue);
 
         // Building a summary Map, the same shape as Module 3's Python dict-accumulation
@@ -60,6 +63,11 @@ public class TradeDemo {
             double existing = valueByInstrument.getOrDefault(key, 0.0);
             valueByInstrument.put(key, existing + trade.getValue());
         }
+        // trades.forEach(trade -> {
+        //     String key = trade.getInstrument();
+        //     double existing = valueByInstrument.getOrDefault(key, 0.0);
+        //     valueByInstrument.put(key, existing + trade.getValue());
+        // });
         System.out.println("Value by instrument: " + valueByInstrument);
 
         // Set: same idea as Python's set() for distinct values
@@ -67,6 +75,9 @@ public class TradeDemo {
         for (Trade trade : trades) {
             distinctClients.add(trade.getClientName());
         }
+        
+        // trades.forEach(trade -> distinctClients.add(trade.getClientName()));
+
         System.out.println("Distinct clients: " + distinctClients);
 
         // --- Part 3: checked vs unchecked exceptions ---
@@ -86,10 +97,14 @@ public class TradeDemo {
         // effectively "unchecked" from the compiler's point of view.
         try {
             Trade badTrade = parseTradeLine("T0099,Unknown,???,-5,0.00,BUY");
+            System.out.println("Parsed trade: " + badTrade);
         } catch (MalformedTradeException e) {
             System.out.println("Caught checked exception: " + e.getMessage());
-        }
-    }
+        }catch (Exception e) {
+            System.out.println("Caught generic exception: " + e.getMessage());
+        }finally {
+    } 
+
 
     // "throws MalformedTradeException" in the method signature is what makes this
     // a checked exception - every caller must acknowledge it, at compile time.
