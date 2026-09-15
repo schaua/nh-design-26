@@ -1,3 +1,8 @@
+---
+config:
+  theme: forest
+  mirrorActors: false
+---
 %%{init: {'sequence': {'mirrorActors': false}}}%%
 sequenceDiagram
     actor C as Client
@@ -9,6 +14,7 @@ sequenceDiagram
     participant R as SettlementReport
 
     C->>+O: submit(order)
+    note right of O: Order received from client
     O->>+V: validate(order)
     V->>P: currentHoldings(client)
     P-->>V: holdings
@@ -27,4 +33,5 @@ sequenceDiagram
         O->>R: addEntry(order, rejected, reason)
         R-->>O: recorded
     end
+    note right of O: Order details and status
     O-->>-C: confirmation
