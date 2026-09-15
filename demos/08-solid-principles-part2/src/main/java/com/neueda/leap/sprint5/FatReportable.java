@@ -8,7 +8,7 @@ import java.util.List;
 // they make sense for it. See CsvOnlyReportBad.java for what that forces the
 // implementer to do.
 public interface FatReportable {
-    String toConsole(List<Order> orders);
-    String toCsv(List<Order> orders);
-    String toPdf(List<Order> orders);
+    String toConsole(List<ResourceHold> holds);
+    String toCsv(List<ResourceHold> holds);
+    String toPdf(List<ResourceHold> holds);
 }

@@ -8,10 +8,10 @@ import java.util.List;
 public class CsvSettlementReport implements CsvReportable {
 
     @Override
-    public String toCsv(List<Order> orders) {
-        StringBuilder csv = new StringBuilder("clientId,fee\n");
-        for (Order order : orders) {
-            csv.append(order.getClientId()).append(",").append(order.calculateFee()).append("\n");
+    public String toCsv(List<ResourceHold> holds) {
+        StringBuilder csv = new StringBuilder("memberId,fee\n");
+        for (ResourceHold hold : holds) {
+            csv.append(hold.getMemberId()).append(",").append(hold.calculateLateFee()).append("\n");
         }
         return csv.toString();
     }
