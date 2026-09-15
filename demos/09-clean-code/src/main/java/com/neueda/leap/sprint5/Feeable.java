@@ -13,7 +13,7 @@ package com.neueda.leap.sprint5;
 // reuse-only inheritance Part 6 of this demo warns about.
 //
 // A class can extend only ONE other class, but can implement as many interfaces
-// as it needs - Instrument extends nothing, but implements Feeable.
+// as it needs - LibraryResource extends nothing, but implements Feeable.
 public interface Feeable {
-    double calculateFee(double tradeValue);
+    double lateFeeCalculations(int daysOverdue);
 }

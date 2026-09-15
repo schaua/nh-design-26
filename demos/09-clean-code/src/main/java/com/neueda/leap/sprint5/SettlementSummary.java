@@ -1,52 +1,49 @@
 package com.neueda.leap.sprint5;
 
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class SettlementSummary {
 
-    // Named, so the threshold's meaning is visible at every use, and there's
-    // exactly one place to change it. Compare to MessySettlementSummary's bare
-    // "10000".
-    private static final double LARGE_ORDER_THRESHOLD = 10000;
-
-    public String summarize(List<Order> orders) {
-        double totalFees = totalFees(orders);
-        int largeOrderCount = countByCategory(orders, true);
-        int smallOrderCount = countByCategory(orders, false);
-
-        return format(totalFees, largeOrderCount, smallOrderCount);
+    public String summarize(List<ResourceHold> loans) {
+        Map<String, Double> loansByMember = groupLoansByMember(loans);
+        return format(loansByMember);
     }
 
-    // One job: add up fees. Nothing about categorisation lives here.
-    private double totalFees(List<Order> orders) {
-        double total = 0;
-        for (Order order : orders) {
-            total += order.calculateFee();
+    // One job: group loans by member and calculate total late fees per member.
+    // Nothing about formatting lives here.
+    private Map<String, Double> groupLoansByMember(List<ResourceHold> loans) {
+        Map<String, Double> memberFees = new LinkedHashMap<>();
+        for (ResourceHold loan : loans) {
+            String memberId = loan.getMemberId();
+            double lateFee = loan.calculateLateFee();
+            memberFees.put(memberId, memberFees.getOrDefault(memberId, 0.0) + lateFee);
         }
-        return total;
+        return memberFees;
     }
 
-    // One job: count orders in one category. Called twice with opposite flags,
-    // rather than one method silently tracking two unrelated counters at once.
-    private int countByCategory(List<Order> orders, boolean large) {
-        int count = 0;
-        for (Order order : orders) {
-            if (isLargeOrder(order) == large) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private boolean isLargeOrder(Order order) {
-        return order.getTradeValue() > LARGE_ORDER_THRESHOLD;
-    }
-
-    // One job: turn the numbers into the report string. No calculation happens
+    // One job: turn the member fees into the report string. No calculation happens
     // here - by the time this method runs, every number it needs already exists.
-    private String format(double totalFees, int largeOrderCount, int smallOrderCount) {
-        return "Total fees: $" + totalFees + "\n"
-                + "Large orders: " + largeOrderCount + "\n"
-                + "Small orders: " + smallOrderCount;
+    private String format(Map<String, Double> memberFees) {
+        if (memberFees.isEmpty()) {
+            return "Library Status: No overdue loans";
+        }
+        
+        StringBuilder report = new StringBuilder();
+        report.append("=== Library Loan Status ===\n");
+        
+        double totalLateFees = 0;
+        for (Map.Entry<String, Double> entry : memberFees.entrySet()) {
+            String memberId = entry.getKey();
+            double fees = entry.getValue();
+            totalLateFees += fees;
+            report.append("Member ").append(memberId).append(": $").append(String.format("%.2f", fees)).append(" in late fees\n");
+        }
+        
+        report.append("---\n");
+        report.append("Total late fees owed: $").append(String.format("%.2f", totalLateFees));
+        
+        return report.toString();
     }
 }

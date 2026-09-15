@@ -17,26 +17,29 @@ about correctness, it's entirely about how cheap the code is to read, change, an
 
 Go through `clean-code-checklist.md` against `MessySettlementSummary` live:
 
-- **Naming**: `s`, `o`, `x`, `n1`, `n2`, `od`, `f`, `r` — none of them say what they hold. Ask the
-  group to guess what `n1` and `n2` mean *before* revealing the answer (large/small order
-  counts) — the fact that nobody can guess correctly is the point.
-- **Magic number**: `10000` appears with zero explanation. Ask: is this a business rule that
-  might need to change? (Yes — it's exactly the kind of threshold that ends up needing a config
-  value eventually. A named constant is step one toward that.)
-- **One long method, several jobs**: counting, categorising by size, and formatting a string are
-  three different responsibilities, all inline in one method — this is Module 7's SRP, showing up
+- **Naming**: `s`, `l`, `m`, `mf`, `x`, `e`, `r` — none of them say what they hold. Ask the
+  group to guess what `mf` and `l` mean *before* revealing the answer (member fees and loans) — 
+  the fact that nobody can guess correctly is the point.
+- **Complex structure**: grouping loans by member and formatting are mixed together in one method,
+  rather than being separated into distinct responsibilities.
+- **One long method, several jobs**: grouping members by their late fees and formatting a string are
+  two different responsibilities, all inline in one method — this is Module 7's SRP, showing up
   again at the method level, not just the class level.
-- **The comment**: `// loop through the orders and add up fees and counts` describes WHAT the
+- **The comment**: `// loop through the loans and group by member` describes WHAT the
   next few lines do — which the code already shows. A useful comment would explain something the
-  code *can't* show, like why 10000 is the threshold. There isn't one here, because there's no
-  non-obvious reason — which is itself worth noticing: not every method needs a comment.
+  code *can't* show, like the business logic for late fee calculations. There isn't one here, because
+  that logic lives in the `LibraryResource` subclasses (Book, DVD, Magazine), which is itself worth
+  noticing: the comment's absence signals good design elsewhere.
 
 ## Show the Refactor Landing, Piece by Piece
 
 In `SettlementSummary`, point out each fix lands on a specific checklist item:
 
-- `LARGE_ORDER_THRESHOLD` — the magic number now has a name and exactly one place to change
-- `totalFees()`, `countByCategory()`, `format()` — each does one job, nameable in one sentence
+- `groupLoansByMember()` — collects all late fee calculations for each member, nothing about 
+  formatting lives here. Shows clear intent in the method name.
+- `format()` — turns the grouped data into the report string. No calculation or grouping happens 
+  here; the method receives already-computed results.
+- Clear variable names (`memberFees`, `memberId`, `fees`) — each name says exactly what it holds
 - No comments at all — none were needed once the names and structure carried the meaning
 
 ## Points to Make Explicitly
@@ -44,9 +47,12 @@ In `SettlementSummary`, point out each fix lands on a specific checklist item:
 - **This was a pure refactor — no new behaviour, no bug fixes.** That's deliberate: it isolates
   "harder to read" from "does something different," so the group can evaluate readability without
   the distraction of correctness changes.
-- **Clean code and SOLID overlap, but aren't the same thing.** `SettlementSummary`'s three
-  extracted methods are *also* small steps toward SRP, but the lesson here is about readability at
-  the statement/method level, not the class-level responsibility split from Module 7.
+- **The business logic lives in the right place.** Late fee calculations are defined by each 
+  resource type (`Book`, `DVD`, `Magazine`) through the `Feeable` interface's `lateFeeCalculations()` 
+  method. The summary classes just orchestrate reporting, not calculate fees.
+- **Clean code and SOLID overlap, but aren't the same thing.** `SettlementSummary`'s two extracted 
+  methods are *also* small steps toward SRP, but the lesson here is about readability at the 
+  statement/method level, not the class-level responsibility split from Module 7.
 
 ## Transition to the Lab
 
@@ -55,3 +61,4 @@ Copilot Chat to refactor the same original messy class and critically assess its
 against the same checklist (Part 2). The order matters: doing it by hand first means they have
 their own informed opinion before seeing what Copilot proposes, rather than anchoring on its
 suggestion.
+

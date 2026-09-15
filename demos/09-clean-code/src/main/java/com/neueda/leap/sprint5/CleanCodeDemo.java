@@ -5,18 +5,18 @@ import java.util.List;
 public class CleanCodeDemo {
 
     public static void main(String[] args) {
-        List<Order> orders = List.of(
-                new Order("C001", new EquityInstrument("AAPL"), 15000),
-                new Order("C002", new BondInstrument("VOD.L"), 8000),
-                new Order("C003", new FundInstrument("VWRL"), 5000),
-                new Order("C004", new EquityInstrument("MSFT"), 20000)
+        List<ResourceHold> loans = List.of(
+                new ResourceHold("M001", new Book("1984"), 5),
+                new ResourceHold("M002", new Magazine("Time-2024", 8.99), 3),
+                new ResourceHold("M001", new DVD("Avatar"), 7),
+                new ResourceHold("M003", new Magazine("Vogue-2024", 6.99), 2)
         );
 
         System.out.println("=== Messy version ===");
-        System.out.println(new MessySettlementSummary().s(orders));
+        System.out.println(new MessySettlementSummary().s(loans));
 
         System.out.println();
         System.out.println("=== Clean version - identical output ===");
-        System.out.println(new SettlementSummary().summarize(orders));
+        System.out.println(new SettlementSummary().summarize(loans));
     }
 }

@@ -13,8 +13,8 @@ deliberate, not a problem (see `@Disabled` at the bottom).
 
 Every lab this sprint has created its test objects inline, inside each test method. `setUp()`
 here does it once, and JUnit re-runs it before *every single test method* — each test gets its
-own fresh `Holding`, with zero risk of one test's leftover state leaking into another. Ask: what
-would happen if `holding` were created once, outside any method, and shared across tests? (Answer:
+own fresh `Loan`, with zero risk of one test's leftover state leaking into another. Ask: what
+would happen if `loan` were created once, outside any method, and shared across tests? (Answer:
 tests could pass or fail depending on execution order — exactly the kind of flaky, order-dependent
 test suite `@BeforeEach` prevents.)
 
@@ -29,14 +29,14 @@ pass even if the code never threw).
 
 ## `assertAll` — Grouped Assertions
 
-Run `bondReportsTickerAndFeeTogether()` and deliberately break it (e.g., temporarily change
-`BondInstrument`'s flat fee) to show **both** failures reported together, not just the first one
+Run `bookReportsTitleAndFeeTogether()` and deliberately break it (e.g., temporarily change
+`Book`'s flat fee) to show **both** failures reported together, not just the first one
 JUnit happens to reach. Contrast with what a chain of three separate `assertEquals` calls would
 show: only the first failure, hiding the second until the first is fixed and the test is re-run.
 
 ## `@ParameterizedTest` — One Test Body, Many Inputs
 
-`bondFeeIsAlwaysFive` and `equityFeeIsOnePercentOfTradeValue` replace what would otherwise be
+`bookFeeIsAlwaysFive` and `magazineFeeIsPercentageOfDaysOverdue` replace what would otherwise be
 four or five near-identical copy-pasted test methods. Point out the difference between
 `@ValueSource` (one input per run) and `@CsvSource` (an input *and* its expected output, paired).
 Ask: when would you reach for one over the other? (`@ValueSource` when the assertion logic is the
@@ -44,8 +44,8 @@ same for every input; `@CsvSource` when each input has a different expected resu
 
 ## `@Nested` — Structure the Test Report Itself
 
-`WhenHoldingIsAtZero` groups two tests under a name that reads like a sentence:
-"JUnitFeaturesDemoTest > when the holding is at exactly zero > any negative adjustment throws."
+`WhenLoanIsAtZero` groups two tests under a name that reads like a sentence:
+"JUnitFeaturesDemoTest > when the loan is at exactly zero > any negative adjustment throws."
 This is documentation, generated for free from the test structure — nobody has to keep a separate
 spec document in sync with what's actually tested.
 
@@ -61,8 +61,8 @@ doesn't run. `@Disabled` keeps that information visible in the test report itsel
   test, make an assertion" pattern from every earlier module, with better tools for organising
   and expressing it.
 - **`@DisplayName` matters more than it looks like it should.** A test report full of
-  `bondFeeIsAlwaysFive` is fine; a test report full of "a bond's fee is always exactly $5,
-  regardless of trade value" is something a non-technical stakeholder could actually read.
+  `bookFeeIsAlwaysFive` is fine; a test report full of "a book's late fee is always exactly $5,
+  regardless of days overdue" is something a non-technical stakeholder could actually read.
 
 ## Part Two: Mocking and Isolation (`MockitoAndHamcrestDemoTest`)
 
@@ -71,33 +71,33 @@ here, and expect to spend as much time on this file as on everything above it co
 
 ### Start With the Problem, Not the Tool
 
-Before touching Mockito, ask the group to look at Module 8's `OrderExecutor` tests (the ones
-using a real `BondInstrument` and a real `InMemoryReportWriter`) and answer honestly: **if one of
+Before touching Mockito, ask the group to look at Module 8's `LoanManager` tests (the ones
+using a real `Book` and a real `InMemoryReportWriter`) and answer honestly: **if one of
 those tests goes red, which class is actually broken?** They can't tell without investigating —
-the test exercises `OrderExecutor`'s coordination logic *and* `BondInstrument`'s real fee formula
+the test exercises `LoanManager`'s coordination logic *and* `Book`'s real fee formula
 *and* `InMemoryReportWriter`'s real storage, all in one go. A bug in any of the three produces
-the same symptom: a red test with `OrderExecutor`'s name on it.
+the same symptom: a red test with `LoanManager`'s name on it.
 
 This is the entire justification for mocking, and it has to land before any Mockito syntax does:
-**a unit test should test one unit.** `OrderExecutor`'s actual job is small — ask its
-`Instrument` for a fee, ask its `ReportWriter` to write a line — and testing that job properly
+**a unit test should test one unit.** `LoanManager`'s actual job is small — ask its
+`LibraryResource` for a fee, ask its `ReportWriter` to write a line — and testing that job properly
 means controlling what its collaborators do, not trusting their real implementations to behave
 correctly too.
 
 ### `@Mock` and `@ExtendWith(MockitoExtension.class)`
 
 Point out the two fields at the top of the class and the class-level annotation. `@Mock` creates
-a fake `Instrument` and a fake `ReportWriter` — objects of the right type that do nothing at all
+a fake `LibraryResource` and a fake `ReportWriter` — objects of the right type that do nothing at all
 by default, and remember every call made to them. `MockitoExtension` is what actually processes
 the `@Mock` annotations before each test runs (functionally similar to `@BeforeEach`, but for
 mock creation specifically).
 
 ### Stubbing: `when(...).thenReturn(...)`
 
-Walk through `executorUsesWhateverFeeTheInstrumentReturns()`. Read it as a sentence: "when
-`calculateFee` is called with `1000.0`, then return `42.0`." Stress that **42.0 is not a real fee
-any instrument would compute** — that's deliberate. The test doesn't care what a real fee formula
-looks like; it only cares whether `OrderExecutor` correctly uses whatever its collaborator gives
+Walk through `managerUsesWhateverFeeTheResourceReturns()`. Read it as a sentence: "when
+`calculateFee` is called with `5.0`, then return `42.0`." Stress that **42.0 is not a real fee
+any library resource would compute** — that's deliberate. The test doesn't care what a real fee formula
+looks like; it only cares whether `LoanManager` correctly uses whatever its collaborator gives
 it back.
 
 Show `stubbingWithAnArgumentMatcher` next — `anyDouble()` stubs a response for *any* argument,
@@ -109,9 +109,9 @@ This is the concept most people find hardest, because it's a new *shape* of asse
 "does this value equal that value," but "did this interaction with a collaborator actually
 happen." Run through all three `Verifying` tests:
 
-- `verify(mockWriter).write("C001: $42.0")` — proves `OrderExecutor` talked to its writer, with
+- `verify(mockWriter).write("P001: $42.0")` — proves `LoanManager` talked to its writer, with
   exactly the right line
-- `verify(mockInstrument, times(1)).calculateFee(500.0)` — proves it happened, and exactly once
+- `verify(mockResource, times(1)).calculateFee(2.0)` — proves it happened, and exactly once
   (not zero times, not twice)
 - `verifyNoInteractions(mockWriter)` — proves a mock was **never touched at all**, useful for
   proving a branch that shouldn't reach a collaborator genuinely doesn't
@@ -121,7 +121,7 @@ in a way that reveals a real bug (e.g., a loop accidentally writing the same lin
 
 ### `ArgumentCaptor`: When `verify()` Isn't Precise Enough
 
-`verify(mockWriter).write("C001: $42.0")` requires an exact string match. Sometimes you want to
+`verify(mockWriter).write("P001: $42.0")` requires an exact string match. Sometimes you want to
 capture what was actually passed and inspect it more flexibly — show
 `capturesTheLineWrittenForDetailedInspection`, and point out the two-step shape: capture first,
 then assert on `captor.getValue()` separately.
@@ -129,10 +129,10 @@ then assert on `captor.getValue()` separately.
 ### Mocks vs. Hand-Rolled Fakes — Bring Back Module 8
 
 Run the `MocksVersusHandRolledFakes` tests side by side. `InMemoryReportWriter` was a perfectly
-good, deliberately-written test double — but it only replaced *one* of `OrderExecutor`'s two
-collaborators. The test still depends on `BondInstrument`'s real fee formula being correct. The
-mock-based version replaces *both*, and returns `999.0` — a number no real instrument would ever
-produce — specifically to prove the test result cannot possibly depend on real instrument logic
+good, deliberately-written test double — but it only replaced *one* of `LoanManager`'s two
+collaborators. The test still depends on `Book`'s real fee formula being correct. The
+mock-based version replaces *both*, and returns `999.0` — a number no real library resource would ever
+produce — specifically to prove the test result cannot possibly depend on real resource logic
 at all.
 
 **Say explicitly: neither approach is "wrong."** A hand-rolled fake is often the right call when
@@ -172,6 +172,6 @@ Learners write a comprehensive test suite from scratch for a given, already-impl
 **`RiskLimitChecker` takes only primitive parameters — it has no collaborators, so there's
 nothing to mock.** Mention this explicitly rather than letting it go unaddressed: it's a genuine
 example of a class that doesn't need mocking, not an oversight in the lab design. Point out that
-`OrderExecutor` and `OrderProcessingEngine` (Modules 8, 12, and 13) are exactly the kind of
+`LoanManager` and other coordination classes (Modules 8, 12, and 13) are exactly the kind of
 classes where mocking would apply if their existing tests were rewritten for true isolation — a
 good optional exercise for anyone who finishes early.

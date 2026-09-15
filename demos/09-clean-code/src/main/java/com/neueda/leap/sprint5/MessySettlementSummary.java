@@ -1,37 +1,39 @@
 package com.neueda.leap.sprint5;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 // CLEAN CODE VIOLATIONS, deliberately, for the demo:
-// - single-letter/meaningless variable names (o, x, s, n1, n2)
-// - a magic number (10000) with no explanation of what it means
-// - one long method doing several unrelated jobs at once
+// - single-letter/meaningless variable names (l, m, x, mf)
 // - deep nesting instead of early returns
+// - one long method doing several unrelated jobs at once (grouping and formatting)
 // - a comment explaining WHAT the code does (the code already says that) instead
 //   of WHY, which is the only kind of comment worth writing
 public class MessySettlementSummary {
 
-    public String s(List<Order> o) {
-        int n1 = 0;
-        int n2 = 0;
-        double x = 0;
-        // loop through the orders and add up fees and counts
-        for (int i = 0; i < o.size(); i++) {
-            Order od = o.get(i);
-            double f = od.calculateFee();
-            x = x + f;
-            if (od.getTradeValue() > 10000) {
-                n1 = n1 + 1;
+    public String s(List<ResourceHold> l) {
+        Map<String, Double> mf = new HashMap<>();
+        // loop through the loans and group by member
+        for (int i = 0; i < l.size(); i++) {
+            ResourceHold m = l.get(i);
+            double x = m.calculateLateFee();
+            if (mf.containsKey(m.getMemberId())) {
+                mf.put(m.getMemberId(), mf.get(m.getMemberId()) + x);
             } else {
-                if (od.getTradeValue() <= 10000) {
-                    n2 = n2 + 1;
-                }
+                mf.put(m.getMemberId(), x);
             }
         }
         String r = "";
-        r = r + "Total fees: $" + x + "\n";
-        r = r + "Large orders: " + n1 + "\n";
-        r = r + "Small orders: " + n2;
+        r = r + "=== Library Loan Status ===\n";
+        double t = 0;
+        for (Map.Entry<String, Double> e : mf.entrySet()) {
+            r = r + "Member " + e.getKey() + ": $" + String.format("%.2f", e.getValue()) + " in late fees\n";
+            t = t + e.getValue();
+        }
+        r = r + "---\n";
+        r = r + "Total late fees owed: $" + String.format("%.2f", t);
         return r;
     }
 }
+
