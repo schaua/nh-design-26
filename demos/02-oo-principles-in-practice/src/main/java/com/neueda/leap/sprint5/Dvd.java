@@ -1,4 +1,4 @@
-package library;
+package com.neueda.leap.sprint5;
 
 public class Dvd extends LibraryResource {
     private final int durationMinutes;

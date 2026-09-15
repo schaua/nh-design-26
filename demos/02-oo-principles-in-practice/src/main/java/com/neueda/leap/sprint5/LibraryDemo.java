@@ -1,4 +1,4 @@
-package library;
+package com.neueda.leap.sprint5;
 
 public class LibraryDemo {
     public static void main(String[] args) {

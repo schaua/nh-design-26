@@ -1,143 +1,195 @@
 # Demo: Module 2 — Object-Oriented Principles in Practice
 
 **Duration:** 27 minutes
-**Files:** `OODemo.java`, `Trade.java`, `Holding.java`, `ConcreteInheritanceProblem.java`,
-`Instrument.java`, `BondInstrument.java`, `EquityInstrument.java`, `FundInstrument.java`,
-`Feeable.java`, `AccountMaintenanceCharge.java`, `BadClientRegistry.java`
+**Files:** `LibraryDemo.java`, `Book.java`, `Magazine.java`, `Dvd.java`, `LibraryResource.java`,
+`Loanable.java`, `Library.java`
 
 Every code example referenced in this guide is shown **before** it's discussed, in the same
-order `OODemo.java` runs them — nothing here refers to code the room hasn't seen yet.
+order `LibraryDemo.java` runs them — nothing here refers to code the room hasn't seen yet.
 
 ## Part 0: Class vs. object (4 min)
 
-Show `Trade` (from Module 1) and the first lines of `OODemo.java`:
+Show `Book` (a library resource) and the first lines of `LibraryDemo.java`:
 
 ```java
-Trade tradeOne = new Trade("T0001", "Alice Chen", "AAPL", 120, 185.32, "BUY");
-Trade tradeTwo = new Trade("T0002", "Ben Whitfield", "MSFT", 60, 402.11, "BUY");
+LibraryResource book = new Book("B001", "Effective Java", "Joshua Bloch", 416);
+LibraryResource magazine = new Magazine("M001", "Java Monthly", 42);
 ```
 
-Narration: `Trade` (the `.java` file, the `class` keyword) is a **blueprint** — it has no data
-of its own. Each `new Trade(...)` call builds a separate **object**: a real, independent thing in
-memory, with its own copy of every field. Run the demo's own check:
+Narration: `Book` (the `.java` file, the `class` keyword) is a **blueprint** — it has no data
+of its own. Each `new Book(...)` call builds a separate **object**: a real, independent thing in
+memory, with its own copy of every field. Run a check showing the difference:
 
 ```java
-System.out.println("Same class? " + (tradeOne.getClass() == tradeTwo.getClass())); // true
-System.out.println("Same object? " + (tradeOne == tradeTwo));                       // false
+System.out.println("Same class? " + (book.getClass() == magazine.getClass())); // false
+System.out.println("Same object? " + (book == magazine));                       // false
 ```
 
-Narration: same *class*, two different *objects* — changing `tradeOne`'s quantity would never
-affect `tradeTwo`. Python equivalent: `class Trade: ...` then `t1 = Trade(...)`, `t2 = Trade(...)`
-— identical idea, Java just always requires the explicit `new`.
+Narration: different *classes*, two different *objects* — a `Book` and a `Magazine`. Changing
+one book's title would never affect the magazine. Python equivalent: `class Book: ...`,
+`class Magazine: ...`, then `b = Book(...)`, `m = Magazine(...)` — identical idea, Java just
+always requires the explicit `new`.
 
 ## Part 1: Encapsulation — the simplest idea today (5 min)
 
 Deliberately covered first: one object, protecting its own data — no inheritance, no interfaces,
 nothing else involved yet.
 
-Show `Holding.java`. Narration: `quantity` is `private` for a specific reason — this class has an
-invariant (quantity can never go negative) that needs protecting. If `quantity` were a public
-field, *every* piece of code anywhere that touches a `Holding` would individually have to
-remember that rule; one careless line, anywhere, breaks it silently.
+Show `LibraryResource.java`. Narration: `loaned` (and its related fields `borrowerId` and
+`dueDate`) are `private` for a specific reason — this class has invariants that need protecting.
+If `loaned` were a public field, *every* piece of code anywhere that touches a `LibraryResource`
+would individually have to remember the rules: when loaning, borrowerId and dueDate must be set;
+when returning, they must be cleared; you can't loan what's already loaned. One careless line,
+anywhere, breaks these invariants silently.
 
-Run the demo's `adjust()` calls — a valid sell, then an invalid one that would go negative.
-`adjust()` is the *only* way to change `quantity`, and it enforces the rule every single time, in
+Run the demo's `loanTo()` and `returnItem()` calls — a valid loan, then show what happens if you
+try to loan something already loaned or return something not currently loaned. These methods are
+the *only* way to change the loan state, and they enforce the rules every single time, in
 exactly one place.
 
 ## Part 2: A straightforward example of inheritance working (5 min)
 
 Now introduce inheritance, starting with a clean example — nothing wrong with it yet. Show
-`ConcreteInstrument` (a normal, instantiable class with a real `calculateFee()`) and
-`PremiumInstrumentV1 extends ConcreteInstrument`:
+`LibraryResource` (an abstract base class) and its concrete subclass `Book`:
 
 ```java
-class PremiumInstrumentV1 extends ConcreteInstrument {
-    PremiumInstrumentV1(String ticker) {
-        super(ticker);
-    }
+public abstract class LibraryResource {
+    private final String id;
+    private String title;
+    private boolean loaned;
+    // ...
+    protected abstract int getLoanPeriod();  // no body — subclass must provide it
+    public abstract String getResourceType();
+}
+
+public class Book extends LibraryResource {
+    private final String author;
+    private final int pageCount;
+    
     @Override
-    double calculateFee(double tradeValue) {
-        return tradeValue * 0.01; // deliberately different from the default
+    protected int getLoanPeriod() {
+        return 21;  // deliberately different loan period for books
+    }
+    
+    @Override
+    public String getResourceType() {
+        return "Book";
     }
 }
 ```
 
-Run it:
+Run it, showing a `Book` being created and loaned:
 
 ```
-VOD.L (inherited method) premium fee (overridden method): 100.0
+Book: Effective Java [B001]
 ```
 
-Narration, pointing at two things happening at once: `getTicker()` was never written anywhere in
-`PremiumInstrumentV1` — it's **inherited** unchanged from `ConcreteInstrument`, `extends` gives
-it that method for free. `calculateFee()`, on the other hand, is **overridden** — this subclass
-supplies its own version, on purpose, because a premium instrument's fee genuinely differs. This
-is the basic mechanism working exactly as intended: inherit what you don't need to change,
-override what you do.
+Narration, pointing at two things happening at once: `getId()`, `getTitle()`, `loanTo()` were
+never written anywhere in `Book` — they're **inherited** unchanged from `LibraryResource`,
+`extends` gives them to this class for free. `getLoanPeriod()` and `getResourceType()`, on the
+other hand, are **overridden** — this subclass supplies its own version, on purpose, because a
+book has different lending rules than a DVD or magazine. This is the basic mechanism working
+exactly as intended: inherit what you don't need to change, override what you do.
 
 ## Part 3: The same mechanism — but a subclass that *doesn't* override (4 min)
 
-Show `EquityInstrumentV1 extends ConcreteInstrument` (no override) and
-`BondInstrumentBuggy extends ConcreteInstrument` (also no override). Run the demo:
+Show `Magazine extends LibraryResource` and `Dvd extends LibraryResource`. Both are concrete
+classes that override the abstract methods. Now suppose someone creates a broken version of
+`Dvd` that forgets to override `getLoanPeriod()`:
 
-```
-EquityInstrumentV1 fee (correct by coincidence): 10.0
-BondInstrumentBuggy fee (SHOULD be a flat $5.00): 10.0  <- silently wrong
+```java
+public class DvdBuggy extends LibraryResource {
+    private final int durationMinutes;
+    
+    // FORGOT TO OVERRIDE getLoanPeriod() 
+    // So it inherits the abstract method... but wait, it can't!
+    
+    @Override
+    public String getResourceType() {
+        return "DVD";
+    }
+}
 ```
 
-Narration: bonds should charge a flat $5.00, not a percentage — whoever wrote
-`BondInstrumentBuggy` forgot to override `calculateFee()`, and the compiler said nothing, because
-the inherited method is a real, callable one, exactly like `PremiumInstrumentV1`'s inherited
-`getTicker()` was fine to leave alone. The difference is that here, leaving it alone was wrong.
-This bug is invisible until someone notices the number is wrong, possibly in production.
+Narration: this code won't compile. That's the point. In an abstract parent, leaving an abstract
+method unoverridden isn't just invisible — it's a compile error. But imagine if `LibraryResource`
+weren't abstract and `getLoanPeriod()` had a real body — say, it returned 14 days (some default).
+Then a `DvdBuggy` that forgot to override would silently inherit that wrong behavior, charging
+the wrong late fee or enforcing the wrong loan period. DVDs should charge a flat fee, not a
+percentage — whoever wrote the buggy subclass forgot to override `getLoanPeriod()`, and the
+compiler said nothing, because the inherited method is a real, callable one, exactly like
+`Book`'s inherited `getId()` was fine to leave alone. The difference is that here, leaving it
+alone was wrong. This bug is invisible until someone notices a DVD was loaned for 14 days
+instead of 5, possibly in production.
 
 ## Part 4: The fix — an abstract class (5 min)
 
-Show `Instrument.java`: `public abstract class Instrument`, with `calculateFee()` having **no
-body at all**. Narration: `abstract` means two things — the class itself can never be
-instantiated directly (`new Instrument("AAPL")` is a compile error), and any subclass that
-doesn't override `calculateFee()` **will not compile**. Show `BondInstrument.java` — the
-corrected version — and narrate: the Part 3 bug is now a compiler error, not a silent mistake, if
-you deleted this method the whole project would refuse to build.
+Show `LibraryResource.java`: `public abstract class LibraryResource`, with `getLoanPeriod()` and
+`getResourceType()` having **no body at all**. Narration: `abstract` means two things — the
+class itself can never be instantiated directly (`new LibraryResource("R001")` is a compile
+error), and any subclass that doesn't override these abstract methods **will not compile**. Show
+`Book.java` — providing real implementations — and narrate: the Part 3 bug is now a compiler
+error, not a silent mistake. If you tried to create a `DvdBuggy` that forgot to override
+`getLoanPeriod()`, the whole project would refuse to build.
 
-Run the demo's output for both `EquityInstrument` and the corrected `BondInstrument` (5.0, not
-10.0) to show the fix landing.
+Run the demo's output for `Book` and `Dvd` (showing their different loan periods) to show both
+approaches landing correctly.
 
 ## Part 5: Interfaces — a capability, not a hierarchy (5 min)
 
-Show `Feeable.java`: `public interface Feeable { double calculateFee(double tradeValue); }`.
-Narration: an interface is a pure contract — a method signature, no body, no state at all, not
-even a private field. `Instrument implements Feeable` (point back at `Instrument.java`'s class
-declaration).
+Show `Loanable.java`: `public interface Loanable { void loanTo(...); void returnItem(); ... }`.
+Narration: an interface is a pure contract — method signatures, no body, no state at all, not
+even a private field. `LibraryResource implements Loanable` (point back at `LibraryResource.java`'s
+class declaration).
 
-Now show `AccountMaintenanceCharge.java`: `implements Feeable`, but does **not** extend
-`Instrument` at all — no ticker, no trade-related state, nothing in common with the `Instrument`
-hierarchy. Narration: this is exactly the problem abstract classes alone can't solve. Forcing
-`AccountMaintenanceCharge` into the `Instrument` hierarchy just to reuse `calculateFee()` would
-be precisely the reuse-only inheritance mistake Part 7 warns about.
+Now show `Library.java`: it doesn't implement `Loanable` at all — it's a manager class, not a
+resource. Yet it *uses* `Loanable` — it calls `loanTo()` and `returnItem()` on the resources it
+manages. Narration: this is exactly the problem abstract classes alone can't solve. An interface
+defines a capability — "things that can be loaned" — and lets us use any class that provides that
+capability, whether or not they're related by inheritance at all.
 
 ## Part 6: Polymorphism across the interface (2 min)
 
 ```java
-List<Feeable> feeableThings = List.of(equity, bond, maintenanceCharge);
-for (Feeable feeable : feeableThings) {
-    totalFees += feeable.calculateFee(tradeValue);
+List<Loanable> loanableThings = new ArrayList<>();
+loanableThings.add(book);
+loanableThings.add(magazine);
+loanableThings.add(dvd);
+
+for (Loanable item : loanableThings) {
+    item.loanTo("MEMBER-001");
 }
 ```
 
-Narration: this list holds genuinely unrelated classes — two `Instrument` subclasses and one
-completely unrelated `AccountMaintenanceCharge` — united only by the one capability they share.
+Narration: this list holds genuinely different concrete classes — `Book`, `Magazine`, `Dvd` —
+each a subclass of `LibraryResource`, but all united by the one capability they share: they can
+be loaned. That capability alone is enough for this code to work. Each resource type has its own
+loan period, its own behavior, but the interface `Loanable` lets us treat them uniformly.
 
-## Part 7: Recognising bad inheritance (3 min)
+## Part 7: Recognising bad inheritance — composition is better (3 min)
 
-Show `BadClientRegistry extends ArrayList<String>`. Run the demo: adding `"C001"` twice succeeds
-— `ArrayList` allows the duplicate, because `BadClientRegistry` never got the chance to define
-its own rule. Narration: the fix is composition, not inheritance — the lab has you build it.
+Show `Library.java`: it *contains* an `ArrayList<LibraryResource>`, but doesn't *extend* it.
+Narration: this is the right pattern. If we'd written `class Library extends ArrayList` instead,
+we'd inherit every ArrayList method — `add()`, `remove()`, `clear()`, `toArray()`, all of it —
+and expose them to users of the `Library` class. But a library shouldn't let clients do
+arbitrary things to the collection; it should control exactly how resources are added and
+retrieved. By using composition (the `resources` field), `Library` exposes only the methods it
+wants: `addResource()`, `findById()`, `getAvailableResources()`. The internal list is hidden,
+controlled, and protected.
+
+Narration: the rule is simple — **use inheritance when the subclass *is a* specialization of
+the parent** (a `Book` *is a* `LibraryResource`), and **use composition when the class has a
+relationship but isn't a true specialization** (a `Library` *has a* collection of resources, but
+isn't a collection itself). Inheritance is powerful but also dangerous — it locks you into a
+hierarchy and exposes everything. Composition gives you control.
 
 ## Key message
 
 Encapsulation is the simplest idea today: one object protecting its own data. Inheritance builds
-on the same mechanism whether it goes right (`PremiumInstrumentV1`, deliberately overriding what
-needs to change) or wrong (`BondInstrumentBuggy`, silently failing to). Abstract classes turn that
-silent failure into a compiler error. Interfaces solve a different problem entirely: a capability
-shared across classes that aren't related by inheritance at all.
+on the same mechanism whether it goes right (`Book` with `getLoanPeriod()` overridden) or wrong
+(a `DvdBuggy` silently inheriting the wrong loan period). Abstract classes turn that silent
+failure into a compiler error. Interfaces solve a different problem entirely: a capability
+shared across classes that may or may not be related by inheritance. And when building larger
+structures like `Library`, composition — delegating to a contained collection — gives you the
+control you need, while inheritance would expose too much and lock you into a hierarchy that
+doesn't fit the problem.
