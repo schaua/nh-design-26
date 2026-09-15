@@ -1,20 +1,18 @@
 classDiagram
-    class OrderManager {
-        +List~Order~ orders
+    class LoanManager {
+        +List~Loan~ loans
         +Map~String, Double~ clientBalances
-        +processOrder(order)
-        +validateOrder(order)
-        +calculateFee(order)
-        +updateHolding(order)
+        +processLoan(loan)
+        +validateAvailable(loan)
+        +calculateLateFee(loan)
+        +updateLoans(loan)
         +printReport()
         +sendEmail(client)
     }
 
-    class Order {
-        +String clientId
-        +String instrumentTicker
-        +double quantity
-        +double price
+    class Loan {
+        +String memberId
+        +String bookId
     }
 
-    OrderManager --> Order : processes
+    LoanManager --> Loan : processes

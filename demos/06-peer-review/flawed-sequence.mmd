@@ -1,0 +1,26 @@
+---
+config:
+  theme: forest
+  mirrorActors: false
+---
+sequenceDiagram
+    actor Member
+    participant LoanManager
+    participant Loan    
+
+    Member->>+LoanManager: submitLoan(loan)
+    LoanManager->>+Loan: processLoan(loan)
+    Loan-->>LoanManager: loanProcessed
+    LoanManager->>Loan: validateAvailable(loan)
+    alt Validation Failed
+        Loan->>LoanManager: handleValidationFailure(loan)
+    else Validation Succeeded
+        Loan->>LoanManager: handleValidationSuccess(loan)    
+    end
+    LoanManager->>Loan: calculateLateFee(loan)
+    Loan-->>LoanManager: feeCalculated
+    LoanManager->>Loan: updateLoans(loan)
+    LoanManager->>Loan: printReport()
+    Loan-->>LoanManager: report
+    LoanManager-->>Member: sendReport()
+    LoanManager->>-Member: sendEmail(member)

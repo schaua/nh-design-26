@@ -1,15 +1,22 @@
-%%{init: {'sequence': {'mirrorActors': false}}}%%
+---
+  config:
+    theme: redux-color
+    mirrorActors: false
+---
 sequenceDiagram
     actor M as Member
     participant L as Library
     participant B as Book
-    participant Loan as Loan
+    participant LN as Loan
+
 
     M->>+L: borrowBook(member, book)
     L->>B: checkAvailable()
     B-->>L: true
+    M->>+L: checkNumberOfCopies()
+    L-->>-M: numberOfCopies()
     L->>M: canBorrow()
     M-->>L: true
-    L->>+Loan: new Loan(member, book, dueDate)
-    Loan-->>-L: loan
+    L->>+LN: new Loan(member, book, dueDate)
+    LN-->>-L: loan
     L-->>-M: confirmation
