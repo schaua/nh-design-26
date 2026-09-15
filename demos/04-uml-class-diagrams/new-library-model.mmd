@@ -1,0 +1,83 @@
+---
+  title: New Library Model
+  displayMode: compact
+  config:
+    theme: forest
+    look: handDrawn
+---
+classDiagram
+  direction LR
+  class Loanable {
+    <<interface>>
+    +loanTo(memberId)
+    +returnItem(bookId)
+    +isLoaned() boolean
+    +getBorrowerId() String
+    +getDueDate() LocalDate
+  }
+  class LibraryResource {
+    <<abstract>>
+    -id: String
+    -title: String
+    -author: String
+    +getDetails() String
+    +getId() String
+    +getTitle() String
+    +getAuthor() String
+    +LibraryResource(id, title, author)
+  }
+
+  class Book {
+    -id: String
+    -isbn: String
+    +getIsbn() String
+    +getId() String
+    +Book(id, title, author, isbn)
+  }
+  class Magazine {
+    -issueNumber: String
+    +getIssueNumber() String
+    +Magazine(id, title, author, issueNumber)
+  }
+
+  class Member {  
+    -id: String
+    -name: String
+    -email: String
+    - List~Loan~ loans
+    +getId() String
+    +getName() String
+    +getEmail() String
+    +Member(id, name, email)
+  }
+
+  class Loan {
+    -id: String
+    -memberId: String
+    -resourceId: String
+    -dueDate: LocalDate
+    +getId() String
+    +getMemberId() String
+    +getResourceId() String
+    +getDueDate() LocalDate
+    +Loan(id, memberId, resourceId, dueDate)
+  }
+  class Library {
+    -resources: List~LibraryResource~
+    -members: List~Member~
+    -loans: List~Loan~
+    +getResources() List~LibraryResource~
+    +getMembers() List~Member~
+    +getLoans() List~Loan~
+    +Library(resources, members, loans)
+  }
+
+  LibraryResource ..|> Loanable : implements
+  Book --|> LibraryResource : extends
+  Magazine --|> LibraryResource : extends
+  Member "1" --o "0..*" Loan : has
+  LibraryResource "1" -- "0..*" Loan : is associated with
+  Loan "1" -- "1" Member : belongs to
+  Loan "1" -- "1" LibraryResource : involves  
+  Library "1" --* "0..>" LibraryResource : owns
+  Library "1" --o "0..>" Member : registers

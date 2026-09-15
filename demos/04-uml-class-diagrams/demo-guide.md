@@ -4,6 +4,9 @@ Continues the Library Book Loans example from Module 3. Learners already have th
 responsibilities, and relationships on paper — today's demo shows how to express that same
 model formally, in UML class diagram notation, using Mermaid.
 
+[Mermaid Class Diagrams](https://mermaid.ai/open-source/syntax/classDiagram.html)    
+[Visual Paradigm Tutorial](https://guides.visual-paradigm.com/uml-class-diagram-tutorial-syntax-relationships/)
+
 ## Why Mermaid
 
 - Diagrams live as **text**, in the git repo, next to the code they describe — they diff and

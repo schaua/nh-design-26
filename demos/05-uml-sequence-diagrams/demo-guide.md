@@ -4,6 +4,8 @@ Continues the Library Book Loans example. Module 4 diagrammed *structure* — wh
 and how they relate. Today's demo diagrams *behaviour* — the actual sequence of calls for one
 specific scenario: a member borrowing a book.
 
+[Mermaid Sequence Diagrams](https://mermaid.ai/open-source/syntax/sequenceDiagram.html)    
+[Visual Paradigm Tutorial](https://guides.visual-paradigm.com/uml-class-diagram-tutorial-syntax-relationships/)
 ## Why a Second Diagram Type
 
 A class diagram alone hides all the interesting questions: what order do things happen in? Who
