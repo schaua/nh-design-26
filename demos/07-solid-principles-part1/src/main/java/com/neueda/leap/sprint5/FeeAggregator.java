@@ -7,6 +7,20 @@ import java.util.List;
 // needs to change.
 public class FeeAggregator {
 
+    // BAD: checks the type of each hold and adds up fees accordingly. Violates SRP.
+    public double badTotalFess(List<ResourceHold> holds) {
+        double total = 0;
+        for (ResourceHold hold : holds) {
+            if (hold.getClass().getName().equals("com.neueda.leap.sprint5.Book"))
+                total += hold.calculateLateFee();
+            else if (hold.getClass().getName().equals("com.neueda.leap.sprint5.DVD"))
+                total += hold.calculateLateFee();
+            else if (hold.getClass().getName().equals("com.neueda.leap.sprint5.Magazine"))
+                total += hold.calculateLateFee();
+        }
+        return total;
+    }
+
     public double totalFees(List<ResourceHold> holds) {
         double total = 0;
         for (ResourceHold hold : holds) {
