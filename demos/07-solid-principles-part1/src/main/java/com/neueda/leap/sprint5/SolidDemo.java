@@ -46,6 +46,9 @@ public class SolidDemo {
         System.out.println("-- After: FrozenLoanRequest doesn't extend Loan, so it can't be");
         System.out.println("   smuggled into code that expects a genuine, adjustable Loan --");
         FrozenLoanRequest properlyFrozen = new FrozenLoanRequest(new Loan(100));
+        // Attempting to include a FrozenLoanRequest in a list of Loans would break LSP.
+        // and here produces a compiler error.
+        // adjustAll(List.of(realLoan, properlyFrozen), 10);
         adjustAll(List.of(realLoan), 10);
         System.out.println("adjustAll succeeded — only real Loans were ever in the list");
         System.out.println("Frozen quantity, read-only: " + properlyFrozen.getQuantity());
