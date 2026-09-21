@@ -1,7 +1,9 @@
 # LEAP Program — Sprint 5 Lab Exercises
 
-This repository contains the hands-on lab exercises accompanying **Sprint 5: Software
-Engineering Essentials, Java & OOAD**, week 5 of the LEAP graduate programme.
+This repository main branch contains the hands-on lab exercises accompanying **Sprint 5: Software
+Engineering Essentials, Java & OOAD**, Sprint 5 of the LEAP graduate programme.
+
+Additional Sprints will be pushed to a new branch.  For example Sprint6 will be in branch sprint6
 
 ## Prerequisites
 

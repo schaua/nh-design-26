@@ -3,14 +3,16 @@ package com.neueda.leap.sprint5;
 import java.util.List;
 
 public class CleanCodeDemo {
-
+    static final int MAX_LATE_FEE = 10000;
     public static void main(String[] args) {
         List<ResourceHold> loans = List.of(
                 new ResourceHold("M001", new Book("1984"), 5),
                 new ResourceHold("M002", new Magazine("Time-2024", 8.99), 3),
                 new ResourceHold("M001", new DVD("Avatar"), 7),
                 new ResourceHold("M003", new Magazine("Vogue-2024", 6.99), 2)
+        
         );
+        loans.get(0).limitFee(MAX_LATE_FEE);
 
         System.out.println("=== Messy version ===");
         System.out.println(new MessySettlementSummary().s(loans));

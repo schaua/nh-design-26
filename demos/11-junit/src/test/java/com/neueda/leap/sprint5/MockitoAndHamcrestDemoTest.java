@@ -98,6 +98,7 @@ class MockitoAndHamcrestDemoTest {
 
             new LoanManager(mockWriter).processLoan(loanRequest);
 
+            verify(mockResource).calculateFee(3.0);
             // Not just "did processLoan() return the right number" - this proves
             // LoanManager actually TALKED to its ReportWriter collaborator,
             // with exactly the line it should have produced.

@@ -7,7 +7,9 @@ import java.util.List;
 // needs to change.
 public class FeeAggregator {
 
-    // BAD: checks the type of each hold and adds up fees accordingly. Violates SRP.
+    // BAD: checks the type of each hold and adds up fees accordingly.
+    // Violates open/closed principle.  Additional types  would require
+    // modifying this code
     public double badTotalFess(List<ResourceHold> holds) {
         double total = 0;
         for (ResourceHold hold : holds) {
@@ -20,7 +22,8 @@ public class FeeAggregator {
         }
         return total;
     }
-
+    // Open/Closed FIX: new resource 
+    // types can be added without modifying this code.
     public double totalFees(List<ResourceHold> holds) {
         double total = 0;
         for (ResourceHold hold : holds) {
