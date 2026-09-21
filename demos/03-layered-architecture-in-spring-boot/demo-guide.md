@@ -4,26 +4,26 @@ Run the app first, then walk through the layers top to bottom.
 
 ```bash
 mvn spring-boot:run
-curl http://localhost:8080/portfolios/C001
-curl http://localhost:8080/portfolios/C002
-curl http://localhost:8080/portfolios/UNKNOWN     # watch this one fail
+curl http://localhost:8080/resources/M001
+curl http://localhost:8080/resources/M002
+curl http://localhost:8080/resources/UNKNOWN     # watch this one fail
 ```
 
-Expect the first two to return a client value with a timestamp; the third to return a raw
+Expect the first two to return a member resource count value with a timestamp; the third to return a raw
 `500` with a stack trace in the console.
 
 ## The Three Layers, and Why Each One Exists
 
-Walk through `PortfolioController` → `PortfolioService` → `PortfolioRepository` in that order,
+Walk through `ResourcesController` → `ResourcesService` → `ResourcesRepository` in that order,
 naming each layer's ONE job:
 
 - **Controller** — translates HTTP into a method call, and a return value back into HTTP.
-  Nothing else. `PortfolioController` has zero business logic; it delegates to
-  `PortfolioService` on the very next line.
+  Nothing else. `ResourcesController` has zero business logic; it delegates to
+  `ResourcesService` on the very next line.
 - **Service** — business logic, coordinating whatever it needs from the repository layer.
-  `PortfolioService` doesn't know or care that `PortfolioRepository` is currently a hardcoded
+  `ResourcesService` doesn't know or care that `ResourcesRepository` is currently a hardcoded
   `Map` — Module 7 swaps that for real Postgres access, and this class does not change.
-- **Repository** — knows how to fetch data, and nothing else. `PortfolioRepository` is an
+- **Repository** — knows how to fetch data, and nothing else. `ResourcesRepository` is an
   interface, exactly like Sprint 5 Module 8's `ReportWriter` — the same Dependency Inversion
   pattern, applied to persistence this time.
 
@@ -33,14 +33,17 @@ example was written.
 
 ## Constructor Injection, Concretely
 
-Point at `PortfolioService`'s constructor: `PortfolioRepository repository, Clock clock`. Neither
+Point at `ResourcesController`'s constructor and its parameter `ResourcesService`.  This parameter is not build with `new` anywhere in this class.  Spring:    
+1. Sees `ResourcesService` is `@Service`-annotated → creates one. 
+
+Point at `ResourcesService`'s constructor: `ResourcesRepository repository, Clock clock`. Neither
 parameter is built with `new` anywhere in this class. Spring:
 
-1. Sees `InMemoryPortfolioRepository` is `@Repository`-annotated → creates one
+1. Sees `InMemoryResourcesRepository` is `@Repository`-annotated → creates one
 2. Sees `AppConfig.clock()` is a `@Bean` method → calls it, gets a `Clock`
-3. Sees `PortfolioService` has exactly one constructor needing a `PortfolioRepository` and a
-   `Clock` → supplies both automatically when it creates the `PortfolioService` bean
-4. Does the same thing one layer up for `PortfolioController`
+3. Sees `ResourcesService` has exactly one constructor needing a `ResourcesRepository` and a
+   `Clock` → supplies both automatically when it creates the `ResourcesService` bean
+4. The service is then supplied to `ResourcesController`
 
 No XML, no manual wiring code anywhere — this whole chain is inferred from annotations and
 constructor signatures.
@@ -57,7 +60,7 @@ shared by everything that needs it, for the whole application's lifetime. That's
 what you want for stateless services and repositories. (`@Scope("prototype")` exists for the rare
 case you want a new instance every time — worth naming, not worth dwelling on today.)
 
-## The Actual Payoff: `PortfolioServiceTest`
+## The Actual Payoff: `ResourcesServiceTest`
 
 This is the module's real point, not just a nice-to-have. Run:
 
@@ -66,17 +69,17 @@ mvn test
 ```
 
 Walk through the test: **no Spring context starts, no embedded Tomcat, no real repository** —
-just two Mockito mocks (`PortfolioRepository`, `Clock`) and a direct `new PortfolioService(...)`
+just two Mockito mocks (`ResourcesRepository`, `Clock`) and a direct `new ResourcesService(...)`
 call. Compare how long this test takes (milliseconds) to how long `mvn spring-boot:run` takes to
 actually start the whole application.
 
 **Say explicitly**: this is only possible *because* of the layering and constructor injection.
-If `PortfolioService` built its own `InMemoryPortfolioRepository` internally (the way
+If `ResourcesService` built its own `InMemoryResourcesRepository` internally (the way
 `BadOrderExecutor` did back in Sprint 5, Module 8), there would be no way to substitute a mock —
 you'd be forced to either run the whole app or accept whatever the real repository does. This is
 Sprint 5 Module 11's isolation lesson again, now inside a real framework.
 
-## The Failing `/portfolios/UNKNOWN` Request Is Deliberate
+## The Failing `/Resourcess/UNKNOWN` Request Is Deliberate
 
 Don't apologise for the raw `500` — call it out as the current, honest state of the service.
 There's no error handling yet; `NoSuchElementException` propagates all the way up to Spring's

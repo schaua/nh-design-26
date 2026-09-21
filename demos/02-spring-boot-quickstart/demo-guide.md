@@ -28,6 +28,68 @@ today you only need enough to understand what `@GetMapping("/hello")` is doing.
 
 ## Step 1: `pom.xml` — the Parent Is Doing Most of the Work
 
+- Create the project structure    
+```
+   Module02
+   |- src
+   |    |- main
+   |    |   |- java
+   |    |   |     |- com
+   |    |   |         |- neueda
+   |    |   |             |- leap
+   |    |   |                 |- sprint6
+   |    |   |- resource
+   |    |
+   |    |- test
+   |        |- java
+   |        |    |- com
+   |        |        |- neueda
+   |        |            |- leap
+   |        |                |- sprint6
+   |- pom.xml
+```
+- Edit `pom.xml`    
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.3.4</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.neueda.leap</groupId>
+  <artifactId>sprint6-m02-demo</artifactId>
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <java.version>21</java.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>sprint6-m02-demo</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
 Point at `<parent>spring-boot-starter-parent</parent>` first. This is a **dependency management
 BOM (Bill of Materials)** — it doesn't add any dependencies itself, but it pins compatible
 versions for every Spring Boot dependency you add later, so you never have to figure out which
@@ -39,6 +101,30 @@ compare this to a plain Java web app, where you'd configure a servlet container,
 servlet, and a JSON library by hand.
 
 ## Step 2: `MissionServiceApplication` — What `@SpringBootApplication` Actually Does
+
+Add `MissionServiceApplication.java` to the sprint6 src folder.  
+Edit `MissioneServiceApplication.java`    
+```java
+package com.neueda.leap.sprint6;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+// @SpringBootApplication is three annotations in one:
+// - @Configuration: this class can define Spring beans
+// - @EnableAutoConfiguration: Spring Boot configures things for you based on
+//   what's on the classpath (spring-boot-starter-web on the classpath -> an
+//   embedded Tomcat gets configured automatically, no XML, no manual wiring)
+// - @ComponentScan: Spring looks for @Controller, @Service, etc. in this
+//   package and everything under it
+@SpringBootApplication
+public class MissionServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MissionServiceApplication.class, args);
+    }
+}
+```
 
 This one annotation is three:
 - `@Configuration` — this class can define Spring beans
@@ -52,6 +138,26 @@ application context, the embedded server, and auto-configuration in one call.
 
 ## Step 3: `HelloController` — the Fastest Possible Endpoint
 
+Add `HelloController.java` to the sprint6 src folder.  
+Edit `HelloController.java`  
+```java
+package com.neueda.leap.sprint6;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+// @RestController = @Controller + @ResponseBody: every method's return value
+// is written directly to the HTTP response body (as JSON, if it's an object),
+// rather than being resolved to a view template.
+@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello from the mission service";
+    }
+}
+```
 `@RestController` = `@Controller` + `@ResponseBody`: every method's return value is written
 directly to the response body, not resolved to a view template. `@GetMapping("/hello")` maps
 `GET /hello` to this method. Returning a plain `String` here is deliberate — the response is
@@ -86,10 +192,26 @@ concrete class itself), except now the framework does the wiring for you instead
 
 ## Step 4: `application.properties` — Configuration, Not Code
 
+Add `application.properties` to the resources folder.    
+Edit `application.properties`    
+```
+server.port=8080
+spring.application.name=mission-service
+```
 `server.port=8080` and `spring.application.name=mission-service` are both plain key-value
 config, read at startup — no annotations, no code changes needed to alter them. Point out: this
 is where Module 9's JWT secret and Module 7's database connection details will eventually live
-too, though never as plain text in a real system (that's its own future conversation).
+too, though never as plain text in a real system (that's its own future conversation).    
+
+Run the application in one terminal.    
+```sh
+mvn spring-boot:run
+```
+
+Test the application from a second terminal.    
+```sh
+curl http://localhost:8080/hello
+```
 
 ## Points to Make Explicitly
 
@@ -103,4 +225,4 @@ too, though never as plain text in a real system (that's its own future conversa
 ## Transition to the Lab
 
 Learners bootstrap their own first Spring Boot service from scratch and get their own `hello`
-endpoint running — the same fast win, built by their own hands this time.
+endpoint running — the same fast win, built by their own hands this time.  No automated scaffolding from IntelliJ or start.spring.io.

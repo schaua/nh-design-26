@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // HoldingMapper, which has no @Mapper annotation of its own.
 @SpringBootApplication
 @MapperScan("com.neueda.leap.sprint6")
-public class MissionServiceApplication {
+public class LibraryServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MissionServiceApplication.class, args);
+        SpringApplication.run(LibraryServiceApplication.class, args);
     }
 }

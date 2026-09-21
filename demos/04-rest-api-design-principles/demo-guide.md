@@ -6,28 +6,28 @@ demonstrates.
 ```bash
 mvn spring-boot:run
 
-curl http://localhost:8080/orders
-curl -si -X POST http://localhost:8080/orders -H "Content-Type: application/json" \
-  -d '{"ticker":"AAPL","quantity":100,"price":150.00}'
-curl http://localhost:8080/orders/1
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080/orders/999
-curl -s -o /dev/null -w "%{http_code}\n" -X DELETE http://localhost:8080/orders/1
-curl -s -o /dev/null -w "%{http_code}\n" -X DELETE http://localhost:8080/orders/1
+curl http://localhost:8080/loans
+curl -si -X POST http://localhost:8080/loans -H "Content-Type: application/json" \
+  -d '{"ISBN":"978-0-13-539857-9","member":"M001"}'
+curl http://localhost:8080/loans/1
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080/loans/999
+curl -s -o /dev/null -w "%{http_code}\n" -X DELETE http://localhost:8080/loans/1
+curl -s -o /dev/null -w "%{http_code}\n" -X DELETE http://localhost:8080/loans/1
 ```
 
 ## Resources, Not Actions — the Single Biggest Rule
 
-`@RequestMapping("/orders")` — a **noun**, plural, naming the resource. Point at what's *not*
-here: no `/getOrders`, no `/createOrder`, no verb anywhere in a URL. **The HTTP method is the
-verb.** `GET /orders` and `POST /orders` are two different operations on the *same* resource
+`@RequestMapping("/loans")` — a **noun**, plural, naming the resource. Point at what's *not*
+here: no `/getloans`, no `/createLoan`, no verb anywhere in a URL. **The HTTP method is the
+verb.** `GET /loans` and `POST /loans` are two different operations on the *same* resource
 path — that's the whole idea.
 
 ## Verbs Mapped to Meaning, Not Just Convention
 
 - **GET** — read, never changes anything. Safe to call any number of times, safe to cache,
   safe to retry automatically if it fails
-- **POST** — create something new. `POST /orders` twice with identical data creates two
-  different orders — that's correct, not a bug, because the client is asking for a new thing
+- **POST** — create something new. `POST /loans` twice with identical data creates two
+  different loans — that's correct, not a bug, because the client is asking for a new thing
   each time
 - **DELETE** — remove a resource. Run the demo's last two `curl` calls again and watch: the
   **second** `DELETE` still returns a clean `404`, not a `500` — deleting something that's
@@ -38,7 +38,7 @@ path — that's the whole idea.
 Point at each response as it happens:
 - `200 OK` — the GET succeeded, here's the resource
 - `201 Created` — POST succeeded, a new resource now exists — **and look at the `Location`
-  header**: it points straight at the new resource's own URL (`/orders/1`). A client can follow
+  header**: it points straight at the new resource's own URL (`/loans/1`). A client can follow
   that header immediately without guessing the new ID from the response body
 - `404 Not Found` — GET or DELETE on an id that doesn't exist
 - `204 No Content` — DELETE succeeded, there's nothing meaningful to send back
@@ -52,14 +52,14 @@ job, once there's real request validation to fail.
 Ask the group: which of GET, POST, DELETE can you safely retry if the network drops the response
 partway through? **GET**: yes, always. **DELETE**: yes — the second call just finds nothing to
 delete. **POST**: **no** — retrying a POST you're not sure succeeded risks creating a duplicate
-order. This is why network-flaky clients (mobile apps, retry logic in other services) need to
+loan. This is why network-flaky clients (mobile apps, retry logic in other services) need to
 know which operations are safe to blindly retry and which aren't.
 
 ## Versioning: Mentioned, Not Built Today
 
 No versioning strategy exists in this demo — there's only one version of this API so far. Name
 the two common approaches anyway, briefly:
-- **URI versioning**: `/v1/orders`, `/v2/orders` — visible, simple, but changes every client's URL
+- **URI versioning**: `/v1/loans`, `/v2/loans` — visible, simple, but changes every client's URL
 - **Header versioning**: `Accept: application/vnd.mission.v1+json` — keeps URLs stable, more
   complex to implement and to test
 

@@ -18,30 +18,30 @@ import static org.mockito.Mockito.when;
 // how fast this test runs to how long `mvn spring-boot:run` takes to start.
 //
 // This is Sprint 5 Module 11's isolation lesson again: PortfolioService is
-// tested completely separately from whatever PortfolioRepository turns out
+// tested completely separately from whatever ResourcesRepository turns out
 // to be (a Map today, Postgres from Module 7 onward) and from real wall-clock
 // time (Clock is mocked too, so the test is deterministic).
 @ExtendWith(MockitoExtension.class)
-class PortfolioServiceTest {
+class ResourcesServiceTest {
 
     @Mock
-    private PortfolioRepository repository;
+    private ResourcesRepository repository;
 
     @Mock
     private Clock clock;
 
     @Test
     void describesTheClientsValueUsingTheInjectedClock() {
-        when(repository.findTotalValue("C001")).thenReturn(42000.0);
+        when(repository.findTotalResources("M001")).thenReturn(4);
         when(clock.instant()).thenReturn(Instant.parse("2026-01-01T00:00:00Z"));
 
-        PortfolioService service = new PortfolioService(repository, clock);
+        ResourcesService service = new ResourcesService(repository, clock);
 
-        String result = service.describeValue("C001");
+        String result = service.describeResources("M001");
 
-        assertTrue(result.contains("C001"));
-        assertTrue(result.contains("42000.0"));
+        assertTrue(result.contains("M001"));
+        assertTrue(result.contains("4"));
         assertTrue(result.contains("2026-01-01T00:00:00Z"));
-        verify(repository).findTotalValue("C001");
+        verify(repository).findTotalResources("M001");
     }
 }

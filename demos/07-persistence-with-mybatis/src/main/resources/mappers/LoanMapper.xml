@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neueda.leap.sprint6.LoanMapper">
+
+    <!-- namespace above must exactly match the Java interface's fully
+         qualified name - that's how MyBatis wires this XML to that
+         interface. id below must match the method name. -->
+    <select id="findByMemberId" resultType="com.neueda.leap.sprint6.Loan">
+        SELECT
+            l.loanId      AS loanId,
+            m.memberId    AS memberId,
+            m.name        AS memberName,
+            r.title       AS resourceTitle,
+            l.resourceId  AS resourceId,
+            l.loanDate    AS loanDate
+        FROM loans l
+        JOIN members m    ON l.memberId = m.memberId
+        JOIN resources r ON l.resourceId = r.resourceId
+        WHERE m.memberId = #{memberId}
+        ORDER BY loanDate
+    </select>
+
+</mapper>

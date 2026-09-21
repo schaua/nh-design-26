@@ -44,7 +44,7 @@ real operational overhead; testing an end-to-end flow now means running several 
 was correctly a monolith — small, one team, no need for independent scaling. Sprint 6 has a
 concrete, specific reason to split it out (separate deployability, separate security boundary,
 part of a larger system this cohort doesn't build) — and if a team can't name a reason that
-concrete, that's usually a sign microservices is the wrong call for them, not a safe default.
+is concrete, that's usually a sign microservices is the wrong call for them, not a safe default.
 
 ## Open the Diagram
 
