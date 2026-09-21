@@ -6,17 +6,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class InstrumentController {
+public class LoanController {
 
-    private final InstrumentRepository repository;
+    private final ResourceRepository repository;
 
-    public InstrumentController(InstrumentRepository repository) {
+    public LoanController(ResourceRepository repository) {
         this.repository = repository;
     }
 
-    @GetMapping("/instruments/{ticker}")
-    public ResponseEntity<Instrument> getInstrument(@PathVariable String ticker) {
-        return repository.findByTicker(ticker)
+    @GetMapping("/resources/{resourceId}")
+    public ResponseEntity<Resource> getResource(@PathVariable String resourceId) {
+        return repository.findByResourceId(resourceId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
