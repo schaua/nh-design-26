@@ -24,13 +24,13 @@ curl -X POST http://localhost:4000/login \
   -d '{"username":"alice","password":"mission123"}'
 # {"token": "eyJhbGc..."}
 
-curl http://localhost:8080/public
+curl http://localhost:8081/public
 # No token required - anyone can see this.
 
-curl -i http://localhost:8080/mission
+curl -i http://localhost:8081/library
 # 401 - no Authorization header at all
 
-curl -H "Authorization: Bearer eyJhbGc..." http://localhost:8080/mission
+curl -i -H "Authorization: Bearer eyJhbGc..." http://localhost:8081/library
 # Classified mission data - authorised for alice
 ```
 
@@ -66,7 +66,7 @@ what teaches Spring Security to read *our* claim shape instead of assuming a def
 
 ## An Honest Bug: the Confusing Stack Trace
 
-Before `@AuthenticationPrincipal` was added to `MissionController`, calling `/mission` with a
+Before `@AuthenticationPrincipal` was added to `LibraryController`, calling `/library` with a
 **valid** token produced:
 
 ```
@@ -86,5 +86,5 @@ asks learners to do.
 ## Transition to the Lab
 
 Kata A: implement `SecurityConfig` from TODOs — the app won't even start until it's right. Kata B:
-`MissionController` has this exact bug baked in — hit it with a real token, interpret the stack
+`LibraryController` has this exact bug baked in — hit it with a real token, interpret the stack
 trace (with GenAI's help), then fix it yourself.

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class MissionController {
+public class LibraryController {
 
     @GetMapping("/public")
     public String publicEndpoint() {
@@ -23,9 +23,9 @@ public class MissionController {
     // doesn't know Jwt should come from the security context, and tries to
     // data-bind it from the request instead, which fails with a confusing
     // "no default constructor" stack trace (see demo-guide.md).
-    @GetMapping("/mission")
-    public String missionEndpoint(@AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("/library")
+    public String libraryEndpoint(@AuthenticationPrincipal Jwt jwt) {
         String username = jwt.getSubject();
-        return "Classified mission data - authorised for " + username;
+        return "Protected library data access is authorised for " + username;
     }
 }
