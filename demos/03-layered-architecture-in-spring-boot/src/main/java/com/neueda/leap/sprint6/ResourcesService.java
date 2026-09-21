@@ -18,9 +18,9 @@ public class ResourcesService {
     private final ResourcesRepository repository;
     private final Clock clock;
 
-    public String describeResources(String string) {
-        Object totalResources = repository.findTotalResources(string);
+    public String describeResources(String member) {
+        Object totalResources = repository.findTotalResources(member);
         Instant asOf = clock.instant();
-        return "Member " + string + " has " + totalResources + " resources " + asOf + ".";
+        return "Member " + member + " has " + totalResources + " resources " + asOf + ".";
     }
 }

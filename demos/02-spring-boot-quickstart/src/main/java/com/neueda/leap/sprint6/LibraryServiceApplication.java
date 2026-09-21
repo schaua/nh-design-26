@@ -11,9 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // - @ComponentScan: Spring looks for @Controller, @Service, etc. in this
 //   package and everything under it
 @SpringBootApplication
-public class MissionServiceApplication {
+public class LibraryServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MissionServiceApplication.class, args);
+        SpringApplication.run(LibraryServiceApplication.class, args);
     }
 }

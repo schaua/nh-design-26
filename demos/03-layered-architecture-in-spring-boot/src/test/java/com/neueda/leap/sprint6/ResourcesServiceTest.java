@@ -32,7 +32,7 @@ class ResourcesServiceTest {
 
     @Test
     void describesTheClientsValueUsingTheInjectedClock() {
-        when(repository.findTotalResources("M001")).thenReturn(4);
+        when(repository.findTotalResources("M001")).thenReturn(42);
         when(clock.instant()).thenReturn(Instant.parse("2026-01-01T00:00:00Z"));
 
         ResourcesService service = new ResourcesService(repository, clock);
@@ -40,7 +40,7 @@ class ResourcesServiceTest {
         String result = service.describeResources("M001");
 
         assertTrue(result.contains("M001"));
-        assertTrue(result.contains("4"));
+        assertTrue(result.contains("42"));
         assertTrue(result.contains("2026-01-01T00:00:00Z"));
         verify(repository).findTotalResources("M001");
     }
