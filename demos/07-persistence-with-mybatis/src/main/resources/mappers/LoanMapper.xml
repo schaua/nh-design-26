@@ -10,9 +10,10 @@
             l.loanId      AS loanId,
             m.memberId    AS memberId,
             m.name        AS memberName,
-            r.title       AS resourceTitle,
+            r.title       AS title,
             l.resourceId  AS resourceId,
-            l.loanDate    AS loanDate
+            l.loanDate    AS loanDate,
+            l.returnDate  AS returnDate
         FROM loans l
         JOIN members m    ON l.memberId = m.memberId
         JOIN resources r ON l.resourceId = r.resourceId
