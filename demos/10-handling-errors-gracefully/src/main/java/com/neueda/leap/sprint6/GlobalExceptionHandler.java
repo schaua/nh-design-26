@@ -43,8 +43,8 @@ public class GlobalExceptionHandler {
 
     // A well-formed order, rejected by a BUSINESS rule - Module 6's 422
     // case, distinct from the 400 case above.
-    @ExceptionHandler(OrderRejectedException.class)
-    public ResponseEntity<ErrorResponse> handleRejected(OrderRejectedException ex, HttpServletRequest request) {
+    @ExceptionHandler(LoanRejectedException.class)
+    public ResponseEntity<ErrorResponse> handleRejected(LoanRejectedException ex, HttpServletRequest request) {
         ErrorResponse body = ErrorResponse.of(422, "Unprocessable Entity", ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
     }

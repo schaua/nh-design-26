@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 // A record, because a DTO has no behaviour - it's pure data, and Bean
 // Validation annotations work the same way on record components as on
 // regular fields.
+
 public record LoanRequestDto(
 
         @NotBlank(message = "ISBN is required")
@@ -19,7 +20,7 @@ public record LoanRequestDto(
         @NotNull(message = "resourceType is required")
         ResourceType resourceType,
 
-        @NotBlank(message = "memberId must be positive")
+        @NotBlank(message = "memberId must exist")
         String memberId,
 
         @NotNull(message = "side is required")
