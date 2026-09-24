@@ -5,4 +5,10 @@ import java.sql.Date;
 
 
 // Result mapping record for members loan history
-public record Loan(int loanId, String memberId, String memberName, String title, String resourceId, Date loanDate, Date returnDate) {}
+public record Loan(int loanId, 
+    String memberId,
+    String memberName,
+    String title,
+    String resourceId,
+    Date loanDate,
+    Date returnDate) {}

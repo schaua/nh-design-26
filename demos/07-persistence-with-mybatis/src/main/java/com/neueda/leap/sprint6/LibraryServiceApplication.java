@@ -5,8 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 // @MapperScan registers every mapper interface in this package as a Spring
-// bean - both the annotation-based InstrumentMapper and the XML-based
-// HoldingMapper, which has no @Mapper annotation of its own.
+// bean - both the annotation-based ResourceMapper and the XML-based
+// LoanMapper, which has no @Mapper annotation of its own.
 @SpringBootApplication
 @MapperScan("com.neueda.leap.sprint6")
 public class LibraryServiceApplication {

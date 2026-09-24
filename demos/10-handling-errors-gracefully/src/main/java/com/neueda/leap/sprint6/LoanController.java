@@ -1,54 +1,36 @@
 package com.neueda.leap.sprint6;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import java.util.NoSuchElementException;
+
 
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+@RestController 
+public class LoanController {   
 
-import java.net.URI;
-import java.time.LocalDate;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+    private final LoanService loanService;
 
-@RestController
-@RequestMapping("/loans")
-public class LoanController {
-
-    private final LoanService service;
-    private final Map<String, LoanResponseDto> loans = new ConcurrentHashMap<>();
-    private final AtomicInteger idSequence = new AtomicInteger(1);
-
-    public LoanController(LoanService service) {
-        this.service = service;
+    public LoanController(LoanService loanService) {
+        this.loanService = loanService;
     }
 
-    @PostMapping
-    public ResponseEntity<LoanResponseDto> requestCheckoutResourceEntity(@Valid @RequestBody LoanRequestDto request) {
-        String resourceId = request.resourceId();
-        String memberId = request.memberId();
-        boolean isWithinMaxLoans = service.isWithinMaxLoans(resourceId, memberId);
-
-        String id = String.valueOf(idSequence.getAndIncrement());
-        LocalDate dueDate = LocalDate.now().plusWeeks(2);
-        String reason = isWithinMaxLoans ? null : "Exceeded max loans"; 
-        LoanResponseDto response = new LoanResponseDto(id, isWithinMaxLoans ? "ACCEPTED" : "REJECTED", dueDate, reason);
-        loans.put(id, response);
-
-        URI location = URI.create("/loans/" + id);
-        return ResponseEntity.created(location).body(response);
+    @PostMapping 
+    public ResponseEntity<Loan> addLoan(@Valid @RequestBody Loan loan) {
+        Loan createdLoan = loanService.addLoan(loan);
+        return ResponseEntity.ok(createdLoan);
     }
 
-    // No manual null-check + notFound().build() here any more - throwing
-    // lets GlobalExceptionHandler produce the SAME error shape this
-    // endpoint would get from an unknown ticker three layers down in
-    // loanservice. One handler, every "doesn't exist" case in the service.
     @GetMapping("/{id}")
-    public ResponseEntity<LoanResponseDto> getOrder(@PathVariable String id) {
-        LoanResponseDto order = loans.get(id);
-        if (order == null) {
-            throw new NoSuchElementException("no order with id " + id);
+    public ResponseEntity<Loan> getLoan(@PathVariable("id") int loanId) {
+        Loan loan = loanService.getLoan(loanId);
+        if (loan != null) {
+            return ResponseEntity.ok(loan);
+        } else {
+            throw new NoSuchElementException("Loan not found");
         }
-        return ResponseEntity.ok(order);
     }
 }

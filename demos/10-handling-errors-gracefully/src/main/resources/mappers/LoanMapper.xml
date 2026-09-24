@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neueda.leap.sprint6.LoanMapper">
+
+    <!-- namespace above must exactly match the Java interface's fully
+         qualified name - that's how MyBatis wires this XML to that
+         interface. id below must match the method name. -->
+    <select id="findByMemberId" resultType="com.neueda.leap.sprint6.Loan">
+        SELECT
+            l.loanId      AS loanId,
+            m.memberId    AS memberId,
+            m.name        AS memberName,
+            r.title       AS title,
+            l.resourceId  AS resourceId,
+            l.loanDate    AS loanDate,
+            l.returnDate  AS returnDate
+        FROM loans l
+        JOIN members m    ON l.memberId = m.memberId
+        JOIN resources r ON l.resourceId = r.resourceId
+        WHERE m.memberId = #{memberId}
+        ORDER BY loanDate
+    </select>
+    <select id="findById" resultType="com.neueda.leap.sprint6.Loan">
+        SELECT
+            l.loanId      AS loanId,
+            m.memberId    AS memberId,
+            m.name        AS memberName,
+            r.title       AS title,
+            l.resourceId  AS resourceId,
+            l.loanDate    AS loanDate,
+            l.returnDate  AS returnDate
+        FROM loans l
+        JOIN members m    ON l.memberId = m.memberId
+        JOIN resources r ON l.resourceId = r.resourceId
+        WHERE l.loanId = #{loanId}
+    </select>   
+    <insert id="addLoan" parameterType="com.neueda.leap.sprint6.Loan">
+        INSERT INTO loans (
+            loanId, 
+            memberId, 
+            resourceId, 
+            loanDate, 
+            returnDate)
+        VALUES (
+            #{loanId}, 
+            #{memberId}, 
+            #{resourceId}, 
+            #{loanDate}, 
+            #{returnDate})
+    </insert>   
+
+</mapper>

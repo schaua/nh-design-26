@@ -8,7 +8,7 @@ import java.util.Optional;
 // even a method body. Spring Data JPA generates the query from the
 // method name at startup ("query derivation"), and JpaRepository
 // already provides findById, save, delete, findAll, etc. for free.
-public interface ResourceRepository extends JpaRepository<Resource, Integer> {
+public interface ResourceRepository extends JpaRepository<Resource, String> {
 
     Optional<Resource> findByResourceId(String resourceId);
 }
