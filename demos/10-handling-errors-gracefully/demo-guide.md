@@ -1,7 +1,7 @@
 # Module 10 Demo Guide — Handling Errors Gracefully
 
 Two honest gaps this sprint has left open on purpose get closed today. Open Module 3's demo
-(`GET /portfolios/UNKNOWN` → raw `500`) and Module 6's demo (`400` with no detail about what was
+(`GET /resources/UNKNOWN` → raw `500`) and Module 6's demo (`400` with no detail about what was
 wrong) side by side with this one, if they're still around.
 
 ```bash
@@ -10,28 +10,28 @@ mvn spring-boot:run
 
 ```bash
 # 201 - unchanged from Module 6
-curl -si -X POST http://localhost:8080/orders -H "Content-Type: application/json" \
-  -d '{"ticker":"AAPL","instrumentType":"EQUITY","quantity":100,"price":150.00,"side":"BUY"}'
+curl -si -X POST http://localhost:8080/loans -H "Content-Type: application/json" \
+  -d '{"resourceId":"978-0-13-539857-9","resourceType":"BOOK", "member":"16", "side":"CHECKOUT"}'
 
 # 400 - now WITH field-level detail
-curl -s -X POST http://localhost:8080/orders -H "Content-Type: application/json" \
-  -d '{"instrumentType":"EQUITY","quantity":-5,"price":150.00,"side":"BUY"}'
+curl -si -X POST http://localhost:8080/loans -H "Content-Type: application/json" \
+  -d '{"resourceId":"978-0-13-539857-9", "member":"16", "side":"HOLD"}'
 
-# 404 - unknown order id, no longer a raw 500
-curl -s http://localhost:8080/orders/999
+# 404 - unknown member id, no longer a raw 500
+curl -s http://localhost:8080/members/999/loans
 
-# 404 - unknown ticker, THREE LAYERS DOWN in OrderService/InMemoryOrderRepository
+# 404 - unknown resourceId, THREE LAYERS DOWN in LoanService/LoanRepository
 curl -s -X POST http://localhost:8080/orders -H "Content-Type: application/json" \
-  -d '{"ticker":"NOTREAL","instrumentType":"EQUITY","quantity":100,"price":150.00,"side":"BUY"}'
+  -d '{"resourceId":"978-0-13-539857-X","resourceType":"BOOK", "member":"16", "side":"BORROW"}'
 
 # 422 - a well-formed order, rejected by a business rule
 curl -s -X POST http://localhost:8080/orders -H "Content-Type: application/json" \
-  -d '{"ticker":"AAPL","instrumentType":"EQUITY","quantity":100000,"price":150.00,"side":"BUY"}'
+  -d '{"resourceId":"978-0-13-539857-9","resourceType":"BOOK", "member":"16", "side":"BORROW"}'
 ```
 
-**Read the two 404 responses side by side.** One came from `OrderController` (unknown order id),
-the other from `InMemoryOrderRepository` (unknown ticker) — three layers deeper in the call stack,
-inside `OrderService.calculateFee`. Neither piece of code knows the other exists. **Same response
+**Read the two 404 responses side by side.** One came from `LoanController` (unknown loan id),
+the other from 'LoanRepository` (unknown resourceId) — three layers deeper in the call stack,
+inside `LoanService.addLoan`. Neither piece of code knows the other exists. **Same response
 shape anyway.** That's the entire point of `@RestControllerAdvice`.
 
 ## One Handler Class, Applied Everywhere
@@ -49,11 +49,11 @@ subtly different each time. This approach means writing the handling once, per e
   generic `{"status":400,...}` body Module 6 shipped with, then this module's
   `{"fieldErrors":[{"field":"ticker","message":"ticker is required"}, ...]}`.
 - **`handleNotFound`** — one handler, `NoSuchElementException`, used by two unrelated call sites.
-  Emphasise: nobody had to modify `OrderController` and `InMemoryOrderRepository` to "know about"
+  Emphasise: nobody had to modify `LoanController` and `LoanRepository` to "know about"
   each other. They both just throw the same *kind* of exception when something doesn't exist.
-- **`handleRejected`** — `OrderRejectedException` → `422`. Open `OrderService.calculateFee` and
+- **`handleRejected`** — `LoanRejectedException` → `422`. Open `MemberService.addLoan` and
   point at where it's thrown: a trade value over the limit is a perfectly well-formed request
-  (every Bean Validation annotation on `OrderRequestDto` passes) that a *business rule*, one layer
+  (every Bean Validation annotation on `LoanRequestDto` passes) that a *business rule*, one layer
   deeper, still won't allow.
 - **`handleUnexpected`** — the catch-all. **Say explicitly**: it never returns `ex.getMessage()`.
   An exception nobody anticipated might carry something that shouldn't reach a client — a class
@@ -63,12 +63,12 @@ subtly different each time. This approach means writing the handling once, per e
 ## `NoSuchElementException` Reused From `java.util`, Not a Custom Type
 
 Point out `NoSuchElementException` is a standard JDK exception, not something written for this
-service. `OrderRejectedException` (a genuinely new business concept) got a custom type;
+service. `LoanRejectedException` (a genuinely new business concept) got a custom type;
 "this thing you looked up doesn't exist" didn't need one. Worth a beat of discussion: when is a
 custom exception worth creating, versus reusing something the JDK already has a name for?
 
 ## Transition to the Lab
 
 Learners implement all four handlers from TODOs, verified against a pre-written integration test
-(`OrderErrorHandlingTest`) that exercises the real running service end-to-end — all four handlers
+(`LoanErrorHandlingTest`) that exercises the real running service end-to-end — all four handlers
 plus the untouched happy path.
