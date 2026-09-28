@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+// import java.util.concurrent.Future;
 
 // A REAL producer, against a REAL Kafka broker - no more in-memory
 // stand-ins (Module 4). Same concepts, real infrastructure: a topic,
@@ -39,6 +40,7 @@ public class SimpleProducer {
                 // .get() blocks until the broker acknowledges the write -
                 // fine for this demo, where seeing real confirmation
                 // matters more than throughput.
+                // Future<RecordMetadata> future = producer.send(record);
                 RecordMetadata metadata = producer.send(record).get();
                 System.out.printf("Sent key=%-7s value=%-16s -> partition=%d offset=%d%n",
                         ticker, value, metadata.partition(), metadata.offset());
