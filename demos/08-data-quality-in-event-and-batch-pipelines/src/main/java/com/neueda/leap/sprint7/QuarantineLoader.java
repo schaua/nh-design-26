@@ -9,12 +9,16 @@ import java.util.List;
 // The fix: every row is explicitly validated against named rules. Rows that
 // fail are QUARANTINED - kept, counted, and labelled with why - not thrown
 // away.
+
+// The update: have validate return a list of all of the reasons for failure
+// This allows us to report multiple issues per row instead of stopping at the first one.
 public class QuarantineLoader {
 
     record QuarantinedRow(int lineNumber, String rawLine, String reason) {}
 
     public static void main(String[] args) throws Exception {
         List<String[]> valid = new ArrayList<>();
+        List<String> reasons = new ArrayList<>();
         List<QuarantinedRow> quarantined = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(QuarantineLoader.class.getClassLoader().getResourceAsStream("trades.csv"), StandardCharsets.UTF_8))) {
@@ -24,11 +28,12 @@ public class QuarantineLoader {
             while ((line = br.readLine()) != null) {
                 lineNumber++;
                 String[] cols = line.split(",", -1);
-                String reason = validate(cols);
-                if (reason == null) {
+                reasons.clear();
+                reasons = validate(cols);
+                if (reasons.isEmpty()) {
                     valid.add(cols);
                 } else {
-                    quarantined.add(new QuarantinedRow(lineNumber, line, reason));
+                    quarantined.add(new QuarantinedRow(lineNumber, line, String.join("; ", reasons)));
                 }
             }
         }
@@ -42,24 +47,39 @@ public class QuarantineLoader {
         }
     }
 
-    // Returns null if the row is valid, otherwise the specific reason it failed.
-    static String validate(String[] cols) {
-        if (cols.length < 4) return "wrong number of columns";
+    // Populates the reasons list with all the issues found in the row.
+    static List<String> validate(String[] cols) {
+        List<String> reasons = new ArrayList<>();
+        
+        if (cols.length < 4) {
+            reasons.add("wrong number of columns");
+        }
         String accountId = cols[0];
         String ticker = cols[1];
         String quantityStr = cols[2];
+        String priceStr = cols[3];
 
-        if (accountId.isBlank()) return "missing account_id";
-        if (ticker.isBlank()) return "missing ticker";
+        if (accountId.isBlank()) reasons.add("missing account_id");
+        if (ticker.isBlank()) reasons.add("missing ticker");
 
-        double quantity;
+        Double quantity;
         try {
             quantity = Double.parseDouble(quantityStr);
         } catch (NumberFormatException e) {
-            return "quantity is not a number: '" + quantityStr + "'";
+            quantity = Double.NaN;
+            reasons.add("quantity is not a number: '" + quantityStr + "'");
         }
-        if (quantity <= 0) return "quantity must be positive, was " + quantity;
+        if (quantity <= 0) reasons.add("quantity must be positive, was " + quantity);
 
-        return null;
+        Double price;
+        try {
+            price = Double.parseDouble(priceStr);
+        } catch (NumberFormatException e) {
+            price = Double.NaN;
+            reasons.add("price is not a number: '" + priceStr + "'");
+        }
+        if (price <= 0) reasons.add("price must be positive, was " + price);
+
+        return reasons;
     }
 }
