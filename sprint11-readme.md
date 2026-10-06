@@ -39,15 +39,15 @@ programme showcase, not an internal update.
 
 ## Suggested Friday session
 
-- Apply this week's S3/CloudFront teaching to your own build. Agree who owns the deployment
+- [ ]  Apply this week's S3/CloudFront teaching to your own build. Agree who owns the deployment
   script, and actually rehearse running it twice.
-- Walk through what changes once your API is called from a different origin than it's used to,
+- [ ]  Walk through what changes once your API is called from a different origin than it's used to,
   and decide what you're doing about it.
-- Do a final pass on the risk list from every earlier sprint, anything still open needs an
+- [ ]  Do a final pass on the risk list from every earlier sprint, anything still open needs an
   honest answer in the showcase, not a hope that nobody asks.
-- Rehearse the showcase itself: walk the whole platform end to end, and know who's presenting
+- [ ]  Rehearse the showcase itself: walk the whole platform end to end, and know who's presenting
   which part, so nobody is caught explaining something they didn't build.
-- Confirm cost and teardown responsibilities with your instructor.
+- [ ]  Confirm cost and teardown responsibilities with your instructor.
 
 ## What to present: the final showcase
 

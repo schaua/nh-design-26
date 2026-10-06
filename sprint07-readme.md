@@ -35,17 +35,17 @@ sprint, not a detail to handle if there's time left:
 
 ## Suggested Friday session
 
-- Design your event flow as a team before writing a producer or consumer: what gets published
+- [ ]  Design your event flow as a team before writing a producer or consumer: what gets published
   when an order is accepted, what consumes it to execute the order, and what else in your own
   architecture might care about the outcome.
-- Walk through the duplicate-delivery question above and agree, concretely, what your consumer
+- [ ]  Walk through the duplicate-delivery question above and agree, concretely, what your consumer
   does the second time, then write a test or a demonstration that proves it.
-- This week's characterisation-testing lesson works best applied to code that already has some
+- [ ]  This week's characterisation-testing lesson works best applied to code that already has some
   age on it: is there something from Sprint 4 or Sprint 6 worth pinning down with tests before
   you touch it again, now this new pressure is on it?
-- Add quality gates to your CI pipeline if you haven't already, and agree what "shifting security
+- [ ]  Add quality gates to your CI pipeline if you haven't already, and agree what "shifting security
   left" means for this specific service.
-- Refine the backlog and risk list against what building this has taught you.
+- [ ]  Refine the backlog and risk list against what building this has taught you.
 
 ## What to present to the class
 

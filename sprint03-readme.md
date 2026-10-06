@@ -36,16 +36,16 @@ know. If it said "a database" without saying which kind or how many, does it sti
 
 ## Suggested Friday session
 
-- Before drawing any ER diagram, list the platform's capabilities that need data (order
+- [ ]  Before drawing any ER diagram, list the platform's capabilities that need data (order
   processing, positions and cash, the audit trail, reporting) and for each one, its access
   pattern: read-heavy or write-heavy, current-state or historical, who queries it and how often.
-- Decide, capability by capability, whether it belongs in the same store as the others or not,
+- [ ]  Decide, capability by capability, whether it belongs in the same store as the others or not,
   and write down the requirement that drove each decision.
-- Design and review the schema for whatever you've decided is your transactional store, as a
+- [ ]  Design and review the schema for whatever you've decided is your transactional store, as a
   full team, every member should be able to defend it, not just whoever drew it.
-- If you've decided any capability needs a different kind of store, don't build it this week,
+- [ ]  If you've decided any capability needs a different kind of store, don't build it this week,
   just capture the decision and what it implies for later sprints.
-- If modelling this has left your team assuming something the spec doesn't actually say, how
+- [ ]  If modelling this has left your team assuming something the spec doesn't actually say, how
   long history really needs to be kept, what "reporting" means to the business, anything like
   that, that's a fast question for your customer instructor rather than a guess baked into the
   schema. Module 10 taught you how to frame exactly this kind of check.

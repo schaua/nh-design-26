@@ -37,4 +37,4 @@ and the spec document rather than a guidance readme.
 
 Sprints 1 and 11 are presentation-heavy in a different way to the rest: Sprint 1's kickoff is
 presented to a stakeholder panel, and Sprint 11's is the final programme showcase. Sprints 2-10
-are internal weekly check-ins to the rest of the class.
+are internal weekly check-ins to the rest of the class.  

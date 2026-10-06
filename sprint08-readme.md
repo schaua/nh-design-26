@@ -33,13 +33,13 @@ with what you now know.
 
 ## Suggested Friday session
 
-- Design the auth flow as a team before anyone writes a controller: what's issued at login, what
+- [ ]  Design the auth flow as a team before anyone writes a controller: what's issued at login, what
   a refresh looks like, what a token actually needs to carry to answer BR-02.
-- Work through the zero trust and revocation questions above and agree your answers.
-- Plan the move from wherever you left authentication in Sprint 6 to where it needs to be now,
+- [ ]  Work through the zero trust and revocation questions above and agree your answers.
+- [ ]  Plan the move from wherever you left authentication in Sprint 6 to where it needs to be now,
   and what has to change elsewhere in your platform for that to be clean rather than messy.
-- Decide and document your password hashing choice and its parameters.
-- Refine the backlog against anything this week's work has surfaced about account state or
+- [ ]  Decide and document your password hashing choice and its parameters.
+- [ ]  Refine the backlog against anything this week's work has surfaced about account state or
   access.
 
 ## What to present to the class

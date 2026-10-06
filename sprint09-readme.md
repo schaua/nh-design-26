@@ -35,19 +35,19 @@ who it has to work for.
 
 ## Suggested Friday session
 
-- Walk your screens as a team against the requirements spec and the customer meeting from
+- [ ]  Walk your screens as a team against the requirements spec and the customer meeting from
   Sprint 2, does what you're building actually show what the customer said they needed, and
   would Joanna manage it without help?
-- Agree the component and state boundaries before building spreads across the team, so the
+- [ ]  Agree the component and state boundaries before building spreads across the team, so the
   login, dashboard, order ticket and blotter don't each reinvent how they talk to the backend.
-- Decide how you're generating or writing your API calls against your own Sprint 6 and Sprint 8
+- [ ]  Decide how you're generating or writing your API calls against your own Sprint 6 and Sprint 8
   contracts, and keep it consistent across the team.
-- Work through the questions above and agree your answers.
-- Plan your test coverage: what's a unit test, what needs Playwright, and who owns which.
-- This is the first sprint with something a non-technical person can actually use rather than
+- [ ]  Work through the questions above and agree your answers.
+- [ ]  Plan your test coverage: what's a unit test, what needs Playwright, and who owns which.
+- [ ]  This is the first sprint with something a non-technical person can actually use rather than
   read about. Show it to your customer instructor before Friday's over, place an order in front
   of them if you can, and bring back what they made of it, not just whether it worked.
-- This is the last sprint before the applied project week, refine the backlog with that in
+- [ ]  This is the last sprint before the applied project week, refine the backlog with that in
   mind, what has to be true of the platform end to end before Sprint 10's gap-closing can start
   from a solid base rather than a shaky one?
 

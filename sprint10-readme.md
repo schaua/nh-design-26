@@ -12,22 +12,22 @@ the whole week, not just one day.
 
 ## Suggested week shape
 
-- Start with an audit. Walk BR-01 through BR-18, and the service expectations in
+- [ ]  Start with an audit. Walk BR-01 through BR-18, and the service expectations in
   section 9, as a team, and mark each one done, partial, or not started, against what's actually
   running right now, not what a backlog item says.
-- Prioritise ruthlessly. With a week left before deployment, close the highest-priority gaps
+- [ ]  Prioritise ruthlessly. With a week left before deployment, close the highest-priority gaps
   first, Must before Should before Could, rather than whichever is more interesting to build. If
   you genuinely can't close everything, this is a real question for your customer instructor
   rather than a call your team makes alone, they've sat through every demo and know what
   actually matters to them.
-- If the platform already holds up end to end with time to spare, BR-18 asks for one additional
+- [ ]  If the platform already holds up end to end with time to spare, BR-18 asks for one additional
   capability that extends its value, justified against the other options you considered. That's
   worth attempting once the core platform is solid, not before.
-- Integration test the whole platform together, not sprint by sprint: place an order end to end
+- [ ]  Integration test the whole platform together, not sprint by sprint: place an order end to end
   through the real UI against the real services, and see where it actually breaks.
-- Revisit the risk list from every earlier sprint, which risks are still open, and which have
+- [ ]  Revisit the risk list from every earlier sprint, which risks are still open, and which have
   you now resolved or knowingly accepted?
-- Keep a running decision log of what you chose to fix, what you chose to leave, and why, you'll
+- [ ]  Keep a running decision log of what you chose to fix, what you chose to leave, and why, you'll
   want it for the final showcase in Sprint 11.
 
 ## What to present to the class

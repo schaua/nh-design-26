@@ -36,13 +36,13 @@ team can explain why, not that you land on any particular structure.
 
 ## Suggested Friday session
 
-- Walk a candidate class diagram as a team before anyone writes code. Every member should be
+- [ ]  Walk a candidate class diagram as a team before anyone writes code. Every member should be
   able to explain why a class exists and where a rule lives, not just the person who drew it.
-- Pressure-test it against SOLID: where would a new instrument type or a new order rule force a
+- [ ]  Pressure-test it against SOLID: where would a new instrument type or a new order rule force a
   change, and is that change contained or does it ripple?
-- Work through the questions above as a team and agree your answers before coding.
-- Agree your TDD approach for the week, tests first, and who's pairing with whom.
-- Refine the backlog against the domain model you now have, does anything in it need rewording
+- [ ]  Work through the questions above as a team and agree your answers before coding.
+- [ ]  Agree your TDD approach for the week, tests first, and who's pairing with whom.
+- [ ]  Refine the backlog against the domain model you now have, does anything in it need rewording
   now that the rules are concrete?
 
 ## What to present to the class

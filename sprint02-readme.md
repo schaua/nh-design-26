@@ -15,11 +15,11 @@ suggestions below are a sensible starting point given what's just been taught.
 
 ## Suggested Friday session
 
-1. Plan for, and then hold, a customer meeting with your nominated customer instructor, in
+- [ ] Plan for, and then hold, a customer meeting with your nominated customer instructor, in
    another room.
-2. Based on the requirements document and what came out of the customer meeting, identify user
+- [ ] Based on the requirements document and what came out of the customer meeting, identify user
    stories from the requirements spec and capture them as a product backlog.
-3. Agree as a team how you'll manage that backlog for the rest of the programme, tool, format,
+- [ ] Agree as a team how you'll manage that backlog for the rest of the programme, tool, format,
    who owns refining the backlog, and when you'll revisit it.
 
 ## What to present to the class
