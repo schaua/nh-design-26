@@ -14,12 +14,15 @@ console.log(firstUsername);
 const firstCount = first([3, 1, 4]); // T inferred as number
 console.log(firstCount);
 
+const firstUnknown = first([]);
+console.log(firstUnknown);
+
 // A generic INTERFACE: Result<T> can wrap a success value of ANY type T,
 // without writing a separate Result type for every kind of value.
 interface Result<T> {
   success: boolean;
-  value?: T;
-  error?: string;
+  value?: T; // populated if success is true
+  error?: string; // populated if success is false
 }
 
 function verifyCredentials(username: string): Result<{ username: string }> {
@@ -52,3 +55,4 @@ function describeByUsername<T extends { username: string }>(record: T): string {
 
 console.log(describeByUsername({ username: "alice", outcome: "success" }));
 console.log(describeByUsername({ username: "bob", verified: true }));
+console.log(describeByUsername({  verified: true }));

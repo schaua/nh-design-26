@@ -60,7 +60,8 @@ export class AuthService {
   }
 
   private findByRefreshToken(refreshToken: string): [string, StoredUser] | undefined {
-    return [...this.users.entries()].find(([, u]) => u.refreshToken === refreshToken);
+    return [...this.users.entries()].find(
+      ([, u]) => u.refreshToken === refreshToken);
   }
 
   // Still a stub - Module 13 replaces this with a real signed JWT.

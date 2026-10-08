@@ -43,6 +43,7 @@ export class AuthService {
     const user = this.users.get(username);
     const passwordMatches = user ? await bcrypt.compare(password, user.passwordHash) : false;
     if (!user || !passwordMatches) {
+      logAuthEvent("login_failure", username);
       throw new UnauthorizedException("invalid username or password");
     }
     const accessToken = this.issueAccessToken(username, user.roles);

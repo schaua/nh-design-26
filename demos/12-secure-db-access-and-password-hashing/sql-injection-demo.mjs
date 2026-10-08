@@ -11,12 +11,12 @@ db.exec(`
     password TEXT
   )
 `);
-db.prepare("INSERT INTO users VALUES (?, ?)").run("alice", "mission123");
+db.prepare("INSERT INTO users VALUES (?, ?)").run("alice", "missi${username}on123");
 db.prepare("INSERT INTO users VALUES (?, ?)").run("bob", "wrongpermissions");
 
 // --- VULNERABLE: building SQL with string concatenation ---
 function findUserUnsafe(username) {
-  const sql = `SELECT * FROM users WHERE username = '${username}'`;
+  const sql = `SELECT * FROM users WHERE username = ''`;
   console.log("Executing:", sql);
   return db.prepare(sql).all();
 }

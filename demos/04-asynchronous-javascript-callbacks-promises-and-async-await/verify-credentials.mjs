@@ -6,6 +6,17 @@
 
 const KNOWN_USERS = ["alice", "bob", "carol"];
 
+// Callback-based version of the credential verification.
+export function verifyCredentialsBlocking(username, callback) {
+  for (let i = 0; i < 3000000; i++) { // spin
+  }
+  if (KNOWN_USERS.includes(username)) {
+    callback(null, { username, verified: true });
+  } else {
+    callback(new Error(`Unknown user: ${username}`));
+  }
+}
+
 // Node-style callback: (error, result) => void. err is null on success.
 export function verifyCredentialsCallback(username, callback) {
   setTimeout(() => {
@@ -14,7 +25,7 @@ export function verifyCredentialsCallback(username, callback) {
     } else {
       callback(new Error(`Unknown user: ${username}`));
     }
-  }, 20);
+  }, 200);
 }
 
 // Promise-based version of the exact same check.

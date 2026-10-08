@@ -12,6 +12,9 @@ export class VerificationController {
     // VerifyCredentialsDto's decorators - if it failed, this line never
     // executes at all.
     const verified = this.verificationService.verify(body.username);
+    if (body.newUser) {
+      return { username: body.username, verified, newUser: true };
+    }
     return { username: body.username, verified };
   }
 }

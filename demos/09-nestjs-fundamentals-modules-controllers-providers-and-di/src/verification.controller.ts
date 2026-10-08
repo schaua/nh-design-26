@@ -9,6 +9,7 @@ export class VerificationController {
   // CONSTRUCTOR INJECTION: Nest sees this parameter needs a
   // VerificationService and hands one in automatically - nothing in this
   // class ever writes `new VerificationService()` itself.
+  
   constructor(private readonly verificationService: VerificationService) {}
 
   @Get(":username")

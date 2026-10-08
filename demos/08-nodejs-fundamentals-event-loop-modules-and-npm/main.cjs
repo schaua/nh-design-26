@@ -3,6 +3,7 @@
 // ESM's import is.
 const { isKnownUser, KNOWN_USERS } = require("./verify-utils.cjs");
 
+
 console.log(KNOWN_USERS);
 console.log(isKnownUser("alice"));
 console.log(isKnownUser("mallory"));

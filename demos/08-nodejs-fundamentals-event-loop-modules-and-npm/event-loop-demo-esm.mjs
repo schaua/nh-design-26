@@ -9,11 +9,11 @@ setTimeout(() => {
 }, 0);
 
 Promise.resolve().then(() => {
-  console.log("4 (was 3 in the .cjs run): Promise.then callback");
+  console.log("3: (was 4 in the .cjs run): Promise.then callback");
 });
 
 process.nextTick(() => {
-  console.log("3 (was 4 in the .cjs run): process.nextTick callback");
+  console.log("4: (was 3 in the .cjs run): process.nextTick callback");
 });
 
 console.log("2: synchronous - runs immediately, straight after line 1");

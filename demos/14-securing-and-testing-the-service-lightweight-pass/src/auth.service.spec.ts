@@ -8,9 +8,11 @@ describe("AuthService", () => {
     service = new AuthService();
   });
 
-  it("logs in and receives a valid access token and refresh token", async () => {
-    await service.register("carol", "mission123", ["MISSION_OPERATOR"]);
-    const { accessToken, refreshToken } = await service.login("carol", "mission123");
+  it("logs in and receives a valid access token and refresh token",
+     async () => {
+      await service.register("carol", "mission123", ["MISSION_OPERATOR"]);
+    const { accessToken, refreshToken } = 
+      await service.login("carol", "mission123");
     expect(typeof accessToken).toBe("string");
     expect(typeof refreshToken).toBe("string");
     expect(accessToken).not.toEqual(refreshToken);

@@ -24,3 +24,18 @@ if (true) {
   var leaksOut = "declared inside the block...";
 }
 console.log("Outside the block:", leaksOut, "(var leaked out!)");
+
+// Hoisting can impact functions as well
+// If defined with `function` it is hoisted and callable before the code that defines it
+// If defined as const it is block scope like let/const
+let arg = "above";
+runAway(arg);
+// limitedFunction(arg);
+
+function runAway(arg) { console.log("runAway function is active " + arg); }
+const limitedFunction = function(arg) { console.log("limitedFunction is active " + arg); }
+arg = "below";
+runAway(arg);
+limitedFunction(arg);
+
+

@@ -1,6 +1,6 @@
 // Primitive type annotations - a colon after the name, then the type.
 const username: string = "alice";
-const attemptCount: number = 3;
+let attemptCount = 3;
 const isLockedOut: boolean = false;
 
 // Typing a function: each parameter gets a type, and the return type
@@ -12,7 +12,9 @@ function describeOutcome(outcome: string): string {
     return "failed to log in";
   }
 }
+// attemptCount = describeOutcome("success");
 console.log(describeOutcome("success"));
+// console.log(describeOutcome(42));
 
 // An interface names a shape - the same "attempt object" from Module 3,
 // but now with its shape written down and enforced.
@@ -21,7 +23,8 @@ interface Attempt {
   outcome: string;
 }
 
-const attempt: Attempt = { username: "alice", outcome: "success" };
+const attempt: Attempt = 
+{ username: "alice", outcome: "success" };
 console.log(attempt);
 
 function describeAttempt(attempt: Attempt): string {

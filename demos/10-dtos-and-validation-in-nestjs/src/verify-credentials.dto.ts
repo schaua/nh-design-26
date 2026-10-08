@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MinLength } from "class-validator";
+import { IsString, IsNotEmpty, MinLength, Allow } from "class-validator";
 
 // A DTO (Data Transfer Object): a plain class describing the SHAPE of an
 // incoming request body, with class-validator decorators describing the
@@ -9,4 +9,6 @@ export class VerifyCredentialsDto {
   @IsNotEmpty()
   @MinLength(3)
   username!: string;
+  @Allow()
+  newUser?: boolean;
 }

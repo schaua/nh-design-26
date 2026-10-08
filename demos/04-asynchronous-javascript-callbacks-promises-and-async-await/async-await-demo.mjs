@@ -25,5 +25,9 @@ async function checkLoginsConcurrently() {
   console.log(results.map((r) => r.username));
 }
 
+console.log("start sequential");
 await checkLoginsSequentially();
-await checkLoginsConcurrently();
+console.log("start concurrent");
+let teamReady =  checkLoginsConcurrently();
+console.log("done");
+await teamReady;
