@@ -73,8 +73,26 @@ the CLI instead, because a console click can't be scripted or repeated identical
 
 ## Part 3: Accessing AWS via the CLI (10 min)
 
-The AWS CLI talks to the same API the console does, from a terminal. The first command to run
-against any new profile, before anything else:
+The AWS CLI talks to the same API the console does, from a terminal. 
+
+To login to the Windows VM terminal with the training account use `aws login`.  This will popup the browser and request authentication.  It then saves the credentials on the local VM.  Use --profile training for any future commands that need to use these credentials.
+```bash
+aws login --profile training
+```
+
+To obtain Access Key and Secret Access Key  use  `aws iam create-access-key --profile training` of the training account after logging in on the Windows VM.
+
+```bash
+aws iam create-access-key --profile training 
+```
+
+To login to the Linux VM terminal with the training account which will require the AWS Access Key ID and AWS Secret Access Key from above and use `aws configure`    
+ 
+```bash
+aws configure --profile training
+```
+
+The first command to run against any new profile, before anything else:
 
 ```bash
 aws sts get-caller-identity --profile training --region us-east-1
@@ -183,10 +201,15 @@ aws iam put-user-policy --user-name leap-demo-readonly --policy-name leap-s3-rea
 aws iam create-access-key --user-name leap-demo-readonly --profile training --region us-east-1
 ```
 
+Create a new profile for the new user's credentials which will request the Access Key ID and the Secret Access Key.  Set the default region name to us-east-1 and the default output format to text.
+```bash
+aws configure --profile leap-demo-readonly
+```
+
 Using the new user's own credentials directly (not the training profile):
 
 ```bash
-aws s3api list-buckets --region us-east-1
+aws s3api list-buckets --region us-east-1 --profile leap-demo-readonly
 ```
 
 Real output — a genuine, verified surprise:
@@ -203,7 +226,7 @@ in the account), which the policy never granted. `s3:ListBucket` only covers lis
 *inside* a bucket you already know the name of:
 
 ```bash
-aws s3api list-objects-v2 --bucket some-existing-bucket --region us-east-1 --max-items 3
+aws s3api list-objects-v2 --bucket some-existing-bucket --region us-east-1 --max-items 3 --profile leap-demo-readonly
 ```
 
 This succeeds and returns real object keys. The gap between "sounds like listing" and "the

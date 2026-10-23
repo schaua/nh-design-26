@@ -142,6 +142,8 @@ aws ecr put-lifecycle-policy --repository-name leap-mission-service \
   --lifecycle-policy-text file://expire-untagged.json
 ```
 
+The json file should contain the following:
+
 ```json
 {
   "rules": [{

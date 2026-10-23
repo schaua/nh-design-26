@@ -1,0 +1,40 @@
+{
+    "CallerReference": "leap-frost-augie-example-$(date +%s)",
+    "Origins": {
+        "Quantity": 1,
+        "Items": [
+            {
+                "Id": 'S3-"$BUCKET"',
+                "DomainName": "leap-frost-augie-s3-demo.s3.amazonaws.com",
+                "S3OriginConfig": {
+                    "OriginAccessIdentity": ""
+                },
+                "OriginAccessControlId": "$OAC_ID"
+            }
+        ]
+    },
+    "DefaultCacheBehavior": {
+        "TargetOriginId": 'S3-"$BUCKET"',
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "AllowedMethods": {
+            "Quantity": 2,
+            "Items": ["GET", "HEAD"],
+            "CachedMethods": {
+                "Quantity": 2,
+                "Items": ["GET", "HEAD"]
+            }
+        },
+        "DefaultTTL": 86400,
+        "MinTTL": 0,
+        "MaxTTL": 31536000,
+        "Compress": true,
+        "ForwardedValues": {
+            "QueryString": false,
+            "Cookies": {
+                "Forward": "none"
+            }
+        }
+    },
+    "Comment": "Leap CloudFront distribution for S3 bucket",
+    "Enabled": true
+}
