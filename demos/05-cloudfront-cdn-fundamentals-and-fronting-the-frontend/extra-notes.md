@@ -4,7 +4,7 @@
 
 ```bash
 export BUCKET="leap-frost-augie-s3-demo-bucket"
-aws s3 mb s://"$BUCKET" --region us-east-1
+aws s3 mb s3://"$BUCKET" --region us-east-1
 ```
 
 ## Upload the content to the bucket
@@ -16,12 +16,22 @@ Upload the files relative to the current directory
 
 
 ```bash
-aws s3 cp /dist/demo-ui/browser/ s3://"$BUCKET"/ --recursive
+aws s3 cp ./dist/demo-ui/browser/ s3://"$BUCKET"/ --recursive
+#or
+aws s3 sync ./dist/demo-ui/browser s3://<bucketname>
 ```
 
 ## Create an Origin Access Control (OAC)
+```bash
+export OACNAME="oac-for-leap-frost-s3"
+aws cloudfront create-origin-access-control --origin-access-control-config Name='"$OACNAME"',SigningProtocol=sigv4,SigningBehavior=always,OriginAccessControlOriginType=s3
+```
+Note the OAC_ID that is generated
 
- Create a dist-config.json file that sets up the ruls
+## Create a CloudFront Distribution
+
+ Create a dist-config.json file that sets up the rule    
+
 ```json
 {
     "CallerReference": "leap-frost-augie-example-$(date +%s)",
@@ -29,7 +39,7 @@ aws s3 cp /dist/demo-ui/browser/ s3://"$BUCKET"/ --recursive
         "Quantity": 1,
         "Items": [
             {
-                "Id": 'S3-"$BUCKET"',
+                "Id": 'S3-leap-frost-augie-s3-demo-bucket',
                 "DomainName": "leap-frost-augie-s3-demo.s3.amazonaws.com",
                 "S3OriginConfig": {
                     "OriginAccessIdentity": ""
@@ -39,7 +49,7 @@ aws s3 cp /dist/demo-ui/browser/ s3://"$BUCKET"/ --recursive
         ]
     },
     "DefaultCacheBehavior": {
-        "TargetOriginId": 'S3-"$BUCKET"',
+        "TargetOriginId": 'S3-leap-frost-augie-s3-demo-bucket',
         "ViewerProtocolPolicy": "redirect-to-https",
         "AllowedMethods": {
             "Quantity": 2,
@@ -67,9 +77,6 @@ aws s3 cp /dist/demo-ui/browser/ s3://"$BUCKET"/ --recursive
 Apply this configuration when creating the OAC
 
 ```bash
-export OACNAME="oac-for-leap-frost-s3"
-export OACID="ABED234123DFFG"
-aws cloudfront create-origin-access-control --origin-access-control-config Name='"$OACNAME"',SigningProtocol=sigv4,SigningBehavior=always,OriginAccessControlOriginType=s3
 aws cloudfront create-distribution --distribution-config file://dist-config.json
 ```
 Save the output distribution ID and domain name as environment variables.
